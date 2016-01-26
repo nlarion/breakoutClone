@@ -12,8 +12,8 @@ $canvas.mousemove(function(e){
   for (var i = 0; i < balls.length; i++) {
     if(!balls[i].launched){
       balls[i].x = e.offsetX;
-      balls[i].y = 250-balls[i].r;
-      console.log(balls);
+      balls[i].y = 240-balls[i].r;
+      //console.log(balls);
     }
   }
 });
@@ -27,11 +27,32 @@ var gameLoop = function(){
     makeBall();
     firstRun = false;
   }
-  // collide();
+  collide();
   testWalls();
   updatePosition();
   drawBricks();
   drawBalls();
+}
+
+var collide = function(){
+  for (var i = 0; i < balls.length; i++) {
+    for (var j = 0; j < bricks.length; j++) {
+      if(balls[1].x > bricks[j].x && balls[1].x < (bricks[j].x+bricks[j].w)) {
+        //console.log("test");
+        if((balls[1].y-balls[1].r) < (bricks[j].y+bricks[j].h)&&(balls[1].y+balls[1].r) > (bricks[j].y)) {
+          balls[i].yvel *= -1;
+        }
+
+      }else if(balls[1].y < bricks[j].y && balls[1].y > (bricks[j].y-bricks[j].h)) {
+        //console.log("test");
+        if((balls[1].x-balls[1].r) < (bricks[j].x+bricks[j].w)&&(balls[1].x+balls[1].r) > (bricks[j].x)) {
+          console.log('working');
+          balls[i].xvel *= -1;
+        }
+
+      }
+    }
+  }
 }
 
 var testWalls = function() {
@@ -59,7 +80,7 @@ var updatePosition = function(){
 }
 
 var makeBall = function(){
-  var ball = new Ball(20,243,7,0,0,"white");
+  var ball = new Ball(20,240,7,0,0,"white");
   balls.push(ball);
   var ball = new Ball(100,10,7,-3,3,"white");
   ball.launched = true;
