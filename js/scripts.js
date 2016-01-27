@@ -20,81 +20,96 @@ $canvas.mousemove(function(e){
 
 var gameLoop = function(){
   //fill with black each frame
-  c.fillStyle = "black";
+  c.fillStyle = "gray";
   c.fillRect(0,0,canvas.width,canvas.height);
   if(firstRun === true){
     makeBricks();
     makeBall();
     firstRun = false;
   }
+  updatePosition();
   collide();
   testWalls();
-  updatePosition();
   drawBricks();
-  drawBalls();
+  drawRenderBalls();
 }
-
 var collide = function(){
   for (var i = 0; i < balls.length; i++) {
     for (var j = 0; j < bricks.length; j++) {
-      if(balls[1].x > bricks[j].x && balls[1].x < (bricks[j].x+bricks[j].w)) {
-        //console.log("test");
-        if((balls[1].y-balls[1].r) < (bricks[j].y+bricks[j].h)&&(balls[1].y+balls[1].r) > (bricks[j].y)) {
-          balls[i].yvel *= -1;
-        }
-
-      }else if(balls[1].y < bricks[j].y && balls[1].y > (bricks[j].y-bricks[j].h)) {
-        //console.log("test");
-        if((balls[1].x-balls[1].r) < (bricks[j].x+bricks[j].w)&&(balls[1].x+balls[1].r) > (bricks[j].x)) {
-          console.log('working');
-          balls[i].xvel *= -1;
-        }
-
+      if((balls[i].nextx+balls[i].r) > bricks[j].x && (balls[i].nextx-balls[i].r) < ((bricks[j].x)+bricks[j].w) && (balls[i].nexty+balls[i].r) > bricks[j].y) {
+        balls[i].vely *= -1;
+        console.log("first");
       }
     }
   }
 }
+// var collide = function(){
+//   for (var i = 0; i < balls.length; i++) {
+//     for (var j = 0; j < bricks.length; j++) {
+//       if(balls[i].nextx >= bricks[j].x && balls[i].nextx <= (bricks[j].x+bricks[j].w)) {
+//         if((balls[i].nexty-balls[i].r) < (bricks[j].y+bricks[j].h)&&(balls[i].nexty+balls[i].r) > (bricks[j].y)) {
+//           balls[i].vely *= -1;
+//           bricks[j].player ? false : bricks.splice(j,1);
+//         }
+//
+//       } else if (balls[i].nexty < bricks[j].y && balls[i].nexty > (bricks[j].y-bricks[j].h)) {
+//         if((balls[i].nextx-balls[i].r) <= (bricks[j].x+bricks[j].w)&&(balls[i].nextx+balls[i].r) >= (bricks[j].x)) {
+//           balls[i].velx *= -1;
+//           bricks[j].player ? false : bricks.splice(j,1);// slight performace loss
+//         }
+//       }
+//     }
+//   }
+// }
 
 var testWalls = function() {
   for (var i = 0; i < balls.length; i++) {
-    if(balls[i].x-balls[i].r<0){
-      balls[i].xvel *= -1;
-    }
-    if(balls[i].x+balls[i].r>canvas.width){
-      balls[i].xvel *= -1;
-    }
-    if(balls[i].y-balls[i].r<0){
-      balls[i].yvel *= -1;
-    }
-    if(balls[i].y+balls[i].r>canvas.height){
-      balls[i].yvel *= -1;
+    if(balls[i].nextx-balls[i].r<0){
+      balls[i].velx *= -1;
+    } else if(balls[i].nextx+balls[i].r>canvas.width){
+      balls[i].velx *= -1;
+    } else if(balls[i].nexty-balls[i].r<0){
+      balls[i].vely *= -1;
+    } else if(balls[i].nexty+balls[i].r>canvas.height){
+      balls[i].vely *= -1;
     }
   }
 }
 
 var updatePosition = function(){
   for (var i = 0; i < balls.length; i++) {
-    balls[i].x += balls[i].xvel;
-    balls[i].y += balls[i].yvel;
+    balls[i].nextx += balls[i].velx;
+    balls[i].nexty += balls[i].vely;
   }
 }
 
 var makeBall = function(){
   var ball = new Ball(20,240,7,0,0,"white");
   balls.push(ball);
-  var ball = new Ball(100,10,7,-3,3,"white");
+  var ball = new Ball(200,20,7,3,-3,"white");
   ball.launched = true;
   balls.push(ball);
 }
 var makeBricks = function(){
-  var brick = new Brick(1,250,40,10,"black");
+  var brick = new Brick(200,250,40,10,"black");
+  brick.player=true;
   bricks.push(brick);
   var brick = new Brick(1,100,40,10,"black");
   bricks.push(brick);
-  var brick = new Brick(50,100,40,10,"black");
-  bricks.push(brick);
-  var brick = new Brick(100,100,40,10,"black");
-  bricks.push(brick);
+  // var brick = new Brick(50,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(100,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(150,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(200,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(250,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(300,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(350,100,40,10,"black");
+  // bricks.push(brick);
 }
 
 var drawBricks = function(){
@@ -102,15 +117,16 @@ var drawBricks = function(){
     c.fillStyle = "green";
     c.fillRect(bricks[i].x,bricks[i].y,bricks[i].w,bricks[i].h);
   }
-  c.stroke();
 }
 
-var drawBalls = function(){
+var drawRenderBalls = function(){
   for (var i = 0; i < balls.length; i++) {
-    c.fillStyle = "blue";
+    balls[i].x = balls[i].nextx;
+    balls[i].y = balls[i].nexty;
     c.beginPath();
     c.arc(balls[i].x,balls[i].y, balls[i].r, 0, Math.PI*2, true);
     c.closePath();
+    c.fillStyle = "blue";
     c.fill();
   }
 }
@@ -126,15 +142,15 @@ function Brick(x,y,w,h,color){
   this.player = false;
 }
 
-function Ball(x,y,r,xvel,yvel,color){
+function Ball(x,y,r,velx,vely,color){
   this.x = x;
   this.y = y;
   this.r = r;
-  this.xvel = xvel;
-  this.yvel = yvel;
+  this.velx = velx;
+  this.vely = vely;
   this.color = color;
-  this.nextx = 0;
-  this.nexty = 0;
+  this.nextx = x;
+  this.nexty = y;
   this.launched = false;
 }
 
