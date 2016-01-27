@@ -38,15 +38,21 @@ var collide = function(){
   //so basically i think the last && needs to be split and put in it's own shit, but idk...
   for (var i = 0; i < balls.length; i++) {
     for (var j = 0; j < bricks.length; j++) {
-      if((balls[i].nextx+balls[i].r) > bricks[j].x && (balls[i].nextx-balls[i].r) < ((bricks[j].x)+bricks[j].w) && (balls[i].nexty+balls[i].r) > bricks[j].y && (balls[i].nexty-balls[i].r) < (bricks[j].y+bricks[j].h)) {
-        balls[i].vely *= -1;
+      if((balls[i].nextx+balls[i].r) > bricks[j].x && (balls[i].nextx-balls[i].r) < ((bricks[j].x)+bricks[j].w) && (balls[i].nexty+balls[i].r) > bricks[j].y ) {
+        balls[i].vely *= 1;
         console.log("first");
-        bricks[j].player ? false : bricks.splice(j,1);
-      }
-      if((balls[i].nexty+balls[i].r) >= bricks[j].y && (balls[i].nexty+balls[i].r) <= ((bricks[j].y)+bricks[j].h) && (balls[i].nextx+balls[i].r) >= bricks[j].x && (balls[i].nextx-balls[i].r) <= bricks[j].x+bricks[j].w){
+        //bricks[j].player ? false : bricks.splice(j,1);
+      } else if((balls[i].nextx+balls[i].r) > bricks[j].x && (balls[i].nextx-balls[i].r) < ((bricks[j].x)+bricks[j].w) && (balls[i].nexty-balls[i].r) < (bricks[j].y+bricks[j].h)) {
+        balls[i].velx *= 1;
+
+
+      }else if((balls[i].nexty+balls[i].r) > bricks[j].y && (balls[i].nexty+balls[i].r) < ((bricks[j].y)+bricks[j].h) && (balls[i].nextx+balls[i].r) > bricks[j].x) {
         balls[i].velx *= -1;
         console.log("second");
-        bricks[j].player ? false : bricks.splice(j,1);
+
+      }else if((balls[i].nexty+balls[i].r) > bricks[j].y && (balls[i].nexty+balls[i].r) < ((bricks[j].y)+bricks[j].h) && (balls[i].nextx-balls[i].r) < bricks[j].x+bricks[j].w) {
+        balls[i].velx *= -1;
+        console.log("second");
       }
     }
   }
@@ -105,22 +111,34 @@ var makeBricks = function(){
   var brick = new Brick(200,250,40,10,"black");
   brick.player=true;
   bricks.push(brick);
-  var brick = new Brick(150,0,40,10,"black");
+
+  var brick = new Brick(150,0,10,400,"black");
   bricks.push(brick);
-  var brick = new Brick(250,0,40,10,"black");
+  var brick = new Brick(250,0,10,400,"black");
   bricks.push(brick);
-  var brick = new Brick(100,100,40,10,"black");
+
+
+  var brick = new Brick(0,0,400,10,"black");
   bricks.push(brick);
-  var brick = new Brick(150,100,40,10,"black");
+  var brick = new Brick(0,100,400,10,"black");
   bricks.push(brick);
-  var brick = new Brick(200,100,40,10,"black");
-  bricks.push(brick);
-  var brick = new Brick(250,100,40,10,"black");
-  bricks.push(brick);
-  var brick = new Brick(300,100,40,10,"black");
-  bricks.push(brick);
-  var brick = new Brick(350,100,40,10,"black");
-  bricks.push(brick);
+
+  // var brick = new Brick(150,0,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(250,0,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(100,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(150,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(200,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(250,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(300,100,40,10,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(350,100,40,10,"black");
+  // bricks.push(brick);
 }
 
 var drawBricks = function(){
