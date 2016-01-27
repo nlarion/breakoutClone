@@ -9,6 +9,7 @@ var bricks = [],
 
 $canvas.mousemove(function(e){
   bricks[0].x = e.offsetX-((bricks[0].w)/2);
+  console.log("x: "+e.offsetX+"y: "+e.offsetY);
   for (var i = 0; i < balls.length; i++) {
     if(!balls[i].launched){
       balls[i].x = e.offsetX;
@@ -34,11 +35,18 @@ var gameLoop = function(){
   drawRenderBalls();
 }
 var collide = function(){
+  //so basically i think the last && needs to be split and put in it's own shit, but idk...
   for (var i = 0; i < balls.length; i++) {
     for (var j = 0; j < bricks.length; j++) {
-      if((balls[i].nextx+balls[i].r) > bricks[j].x && (balls[i].nextx-balls[i].r) < ((bricks[j].x)+bricks[j].w) && (balls[i].nexty+balls[i].r) > bricks[j].y) {
+      if((balls[i].nextx+balls[i].r) > bricks[j].x && (balls[i].nextx-balls[i].r) < ((bricks[j].x)+bricks[j].w) && (balls[i].nexty+balls[i].r) > bricks[j].y && (balls[i].nexty-balls[i].r) < (bricks[j].y+bricks[j].h)) {
         balls[i].vely *= -1;
         console.log("first");
+        bricks[j].player ? false : bricks.splice(j,1);
+      }
+      if((balls[i].nexty+balls[i].r) >= bricks[j].y && (balls[i].nexty+balls[i].r) <= ((bricks[j].y)+bricks[j].h) && (balls[i].nextx+balls[i].r) >= bricks[j].x && (balls[i].nextx-balls[i].r) <= bricks[j].x+bricks[j].w){
+        balls[i].velx *= -1;
+        console.log("second");
+        bricks[j].player ? false : bricks.splice(j,1);
       }
     }
   }
@@ -66,11 +74,14 @@ var testWalls = function() {
   for (var i = 0; i < balls.length; i++) {
     if(balls[i].nextx-balls[i].r<0){
       balls[i].velx *= -1;
-    } else if(balls[i].nextx+balls[i].r>canvas.width){
+    }
+    if(balls[i].nextx+balls[i].r>canvas.width){
       balls[i].velx *= -1;
-    } else if(balls[i].nexty-balls[i].r<0){
+    }
+    if(balls[i].nexty-balls[i].r<0){
       balls[i].vely *= -1;
-    } else if(balls[i].nexty+balls[i].r>canvas.height){
+    }
+    if(balls[i].nexty+balls[i].r>canvas.height){
       balls[i].vely *= -1;
     }
   }
@@ -84,9 +95,9 @@ var updatePosition = function(){
 }
 
 var makeBall = function(){
-  var ball = new Ball(20,240,7,0,0,"white");
-  balls.push(ball);
-  var ball = new Ball(200,20,7,3,-3,"white");
+  // var ball = new Ball(20,240,7,0,0,"white");
+  // balls.push(ball);
+  var ball = new Ball(200,75,7,3,-3,"white");
   ball.launched = true;
   balls.push(ball);
 }
@@ -94,22 +105,22 @@ var makeBricks = function(){
   var brick = new Brick(200,250,40,10,"black");
   brick.player=true;
   bricks.push(brick);
-  var brick = new Brick(1,100,40,10,"black");
+  var brick = new Brick(150,0,40,10,"black");
   bricks.push(brick);
-  // var brick = new Brick(50,100,40,10,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(100,100,40,10,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(150,100,40,10,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(200,100,40,10,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(250,100,40,10,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(300,100,40,10,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(350,100,40,10,"black");
-  // bricks.push(brick);
+  var brick = new Brick(250,0,40,10,"black");
+  bricks.push(brick);
+  var brick = new Brick(100,100,40,10,"black");
+  bricks.push(brick);
+  var brick = new Brick(150,100,40,10,"black");
+  bricks.push(brick);
+  var brick = new Brick(200,100,40,10,"black");
+  bricks.push(brick);
+  var brick = new Brick(250,100,40,10,"black");
+  bricks.push(brick);
+  var brick = new Brick(300,100,40,10,"black");
+  bricks.push(brick);
+  var brick = new Brick(350,100,40,10,"black");
+  bricks.push(brick);
 }
 
 var drawBricks = function(){
