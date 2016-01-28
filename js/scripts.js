@@ -39,16 +39,52 @@ var collide = function(){
   for (var i = 0; i < balls.length; i++) {
     for (var j = 0; j < bricks.length; j++) {
       if ( ((balls[i].nexty + balls[i].h) > (bricks[j].y)) && ((balls[i].nexty) < (bricks[j].y + bricks[j].h)) && ((balls[i].nextx + balls[i].w) > bricks[j].x) && (balls[i].nextx < (bricks[j].x + bricks[j].w)) ) {
-        var dx = (balls[i].nextx+balls[i].velx) - balls[i].nextx;
-        var dy = (balls[i].nexty+balls[i].vely) - balls[i].nexty;
-        var distSquared = dx * dx + dy * dy;
-        var xVelocity = balls[i].velx - bricks[j].velx;
-        var yVelocity = balls[i].vely - bricks[j].vely;
-        // var xVelocity = bricks[j].velx - balls[i].velx;
-        // var yVelocity = bricks[j].vely - balls[i].vely;
-        var dotProduct = dx * xVelocity + dy * yVelocity; 
-        console.log(dotProduct);
-        if (dotProduct > 0) {
+        //right
+        if( (balls[i].y + balls[i].h > bricks[j].y) &&
+          (balls[i].y < bricks[j].y + bricks[j].h) &&
+          (balls[i].x + balls[i].w > bricks[j].x) &&
+          (balls[i].x > bricks[j].x )){
+          console.log("text");
+          var dx = (balls[i].nextx+balls[i].velx) - balls[i].nextx;
+          var dy = (balls[i].nexty+balls[i].vely) - balls[i].nexty;
+          if (dx<0 && dy<0) {
+            //balls[i].vely *= -1;
+            balls[i].velx *= -1;
+          } else if (dx<0 && dy>0) {
+            //balls[i].vely *= -1;
+            balls[i].velx *= -1;
+          } else if (dx>0 && dy>0) {
+            //balls[i].vely *= -1;
+            balls[i].velx *= -1;
+          } else if (dx>0 && dy<0) {
+            //balls[i].vely *= -1;
+            balls[i].velx *= -1;
+          } 
+          //left needs to be done
+        }else if( (balls[i].y + balls[i].h > bricks[j].y) &&
+          (balls[i].y < bricks[j].y + bricks[j].h) &&
+          (balls[i].x + balls[i].w > bricks[j].x) &&
+          (balls[i].x > bricks[j].x )){
+          console.log("text");
+          var dx = (balls[i].nextx+balls[i].velx) - balls[i].nextx;
+          var dy = (balls[i].nexty+balls[i].vely) - balls[i].nexty;
+          if (dx<0 && dy<0) {
+            //balls[i].vely *= -1;
+            balls[i].velx *= -1;
+          } else if (dx<0 && dy>0) {
+            //balls[i].vely *= -1;
+            balls[i].velx *= -1;
+          } else if (dx>0 && dy>0) {
+            //balls[i].vely *= -1;
+            balls[i].velx *= -1;
+          } else if (dx>0 && dy<0) {
+            //balls[i].vely *= -1;
+            balls[i].velx *= -1;
+          }
+
+        } else {  
+          var dx = (balls[i].nextx+balls[i].velx) - balls[i].nextx;
+          var dy = (balls[i].nexty+balls[i].vely) - balls[i].nexty;
           if (dx<0 && dy<0) {
             balls[i].vely *= -1;
             //balls[i].velx *= -1;
@@ -62,53 +98,34 @@ var collide = function(){
             balls[i].vely *= -1;
             //balls[i].velx *= -1;
           }
-
-          console.log(dx+" "+dy)
-        } else {
-          console.log("hi");
         }
-        // if (dx<0 && dy<0) {
-        //   balls[i].vely *= -1;
-        //   //balls[i].velx *= -1;
-        // } else if (dx<0 && dy>0) {
-        //   balls[i].vely *= -1;
-        //   //balls[i].velx *= -1;
-        // } else if (dx>0 && dy>0) {
-        //   balls[i].vely *= -1;
-        //   //balls[i].velx *= -1;
-        // } else if (dx>0 && dy<0) {
-        //   balls[i].vely *= -1;
-        //   //balls[i].velx *= -1;
-        // }
-      }
+        //console.log(dx+" "+dy)
+        
+      } 
     }
   }
 }
 
-// var collide = function(){
-//   for (var i = 0; i < balls.length; i++) {
-//     for (var j = 0; j < bricks.length; j++) {
-//       if ( ((balls[i].nexty + balls[i].h) > (bricks[j].y)) && ((balls[i].nexty) < (bricks[j].y + bricks[j].h)) && ((balls[i].nextx + balls[i].w) > bricks[j].x) && (balls[i].nextx < (bricks[j].x + bricks[j].w))) {
-//         dx = (balls[i].nextx+balls[i].velx) - balls[i].nextx;
-//         dy = (balls[i].nexty+balls[i].vely) - balls[i].nexty;
-//         console.log(dx+" "+dy)
-//         if (dx<0 && dy<0) {
-//           balls[i].vely *= -1;
-//           //balls[i].velx *= -1;
-//         } else if (dx<0 && dy>0) {
-//           balls[i].vely *= -1;
-//           //balls[i].velx *= -1;
-//         } else if (dx>0 && dy>0) {
-//           balls[i].vely *= -1;
-//           //balls[i].velx *= -1;
-//         } else if (dx>0 && dy<0) {
-//           balls[i].vely *= -1;
-//           //balls[i].velx *= -1;
-//         }
-//       }
-//     }
-//   }
-// }
+// function boundingBoxCollide(object1, object2) {
+      
+//     var left1 = object1.x;
+//     var left2 = object2.x;
+//     var right1 = object1.x + object1.width;
+//     var right2 = object2.x + object2.width;
+//     var top1 = object1.y;
+//     var top2 = object2.y;
+//     var bottom1 = object1.y + object1.height;
+//     var bottom2 = object2.y + object2.height;
+      
+//     if (bottom1 < top2) return(false);
+//     if (top1 > bottom2) return(false);
+      
+//     if (right1 < left2) return(false);
+//     if (left1 > right2) return(false);
+      
+//     return(true);
+
+//   };
 
 // var testWalls = function() {
 //   for (var i = 0; i < balls.length; i++) {
@@ -170,10 +187,10 @@ var makeBricks = function(){
   brick.player=true;
   bricks.push(brick);
 
-  // var brick = new Brick(150,0,10,400,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(250,0,10,400,"black");
-  // bricks.push(brick);
+  var brick = new Brick(150,0,10,400,"black");
+  bricks.push(brick);
+  var brick = new Brick(250,0,10,400,"black");
+  bricks.push(brick);
 
 
   // var brick = new Brick(0,0,400,10,"black");
