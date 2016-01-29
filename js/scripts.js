@@ -56,50 +56,11 @@ var collide = function(){
         } else {
           balls[i].vely *= -1;
         }
-        //console.log(dx+" "+dy)
-        //bricks[j].player ? false : bricks.splice(j,1);
+        bricks[j].player ? false : bricks.splice(j,1);
       }
     }
   }
 }
-
-// function boundingBoxCollide(object1, object2) {
-
-//     var left1 = object1.x;
-//     var left2 = object2.x;
-//     var right1 = object1.x + object1.width;
-//     var right2 = object2.x + object2.width;
-//     var top1 = object1.y;
-//     var top2 = object2.y;
-//     var bottom1 = object1.y + object1.height;
-//     var bottom2 = object2.y + object2.height;
-
-//     if (bottom1 < top2) return(false);
-//     if (top1 > bottom2) return(false);
-
-//     if (right1 < left2) return(false);
-//     if (left1 > right2) return(false);
-
-//     return(true);
-
-//   };
-
-// var testWalls = function() {
-//   for (var i = 0; i < balls.length; i++) {
-//     if(balls[i].nextx-balls[i].r<0){
-//       balls[i].velx *= -1;
-//     }
-//     if(balls[i].nextx+balls[i].r>canvas.width){
-//       balls[i].velx *= -1;
-//     }
-//     if(balls[i].nexty-balls[i].r<0){
-//       balls[i].vely *= -1;
-//     }
-//     if(balls[i].nexty+balls[i].r>canvas.height){
-//       balls[i].vely *= -1;
-//     }
-//   }
-// }
 
 var testWalls = function() {
   for (var i = 0; i < balls.length; i++) {
@@ -142,40 +103,33 @@ var makeBall = function(){
 var makeBricks = function(){
   var brick = new Brick(200,250,40,15,"black");
   brick.player=true;
+  brick.color = "black";
   bricks.push(brick);
 
-  var brick = new Brick(150,0,10,400,"black");
+  var brick = new Brick(5,0,30,15,"black");
   bricks.push(brick);
-  var brick = new Brick(250,0,10,400,"black");
+  var brick = new Brick(55,0,30,15,"black");
   bricks.push(brick);
-
-
-  var brick = new Brick(0,0,400,10,"black");
+  var brick = new Brick(105,0,30,15,"black");
   bricks.push(brick);
-  var brick = new Brick(0,100,400,10,"black");
+  var brick = new Brick(155,0,30,15,"black");
   bricks.push(brick);
-
-  // var brick = new Brick(150,0,40,15,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(250,0,40,15,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(100,100,40,15,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(150,100,40,15,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(200,100,40,15,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(250,100,40,15,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(300,100,40,15,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(350,100,40,15,"black");
-  // bricks.push(brick);
+  var brick = new Brick(205,0,30,15,"black");
+  bricks.push(brick);
+  var brick = new Brick(255,0,30,15,"black");
+  bricks.push(brick);
+  var brick = new Brick(305,0,30,15,"black");
+  bricks.push(brick);
+  var brick = new Brick(355,0,30,15,"black");
+  bricks.push(brick);
 }
 
 var drawBricks = function(){
+  var target = 100;
   for (var i = 0; i < bricks.length; i++) {
+    bricks[i].player ? false : bricks[i].y +=(target-bricks[i].y)*.1;
     c.fillStyle = "green";
+    bricks[i].player ? c.fillStyle = "black" : false
     c.fillRect(bricks[i].x,bricks[i].y,bricks[i].w,bricks[i].h);
   }
 }
@@ -184,11 +138,7 @@ var drawRenderBalls = function(){
   for (var i = 0; i < balls.length; i++) {
     balls[i].x = balls[i].nextx;
     balls[i].y = balls[i].nexty;
-    // c.beginPath();
-    // c.arc(balls[i].x,balls[i].y, balls[i].r, 0, Math.PI*2, true);
-    // c.closePath();
     c.fillStyle = "blue";
-    // c.fill();
     c.fillRect(balls[i].x,balls[i].y,balls[i].w,balls[i].h);
 
   }
