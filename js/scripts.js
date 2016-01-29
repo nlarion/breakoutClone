@@ -9,7 +9,7 @@ var bricks = [],
 
 $canvas.mousemove(function(e){
   bricks[0].x = e.offsetX-((bricks[0].w)/2);
-  //console.log("x: "+e.offsetX+"y: "+e.offsetY);
+  console.log("x: "+e.offsetX+"y: "+e.offsetY);
   for (var i = 0; i < balls.length; i++) {
     if(!balls[i].launched){
       balls[i].x = e.offsetX;
@@ -39,75 +39,32 @@ var collide = function(){
   for (var i = 0; i < balls.length; i++) {
     for (var j = 0; j < bricks.length; j++) {
       if ( ((balls[i].nexty + balls[i].h) > (bricks[j].y)) && ((balls[i].nexty) < (bricks[j].y + bricks[j].h)) && ((balls[i].nextx + balls[i].w) > bricks[j].x) && (balls[i].nextx < (bricks[j].x + bricks[j].w)) ) {
-        //right
-        if( (balls[i].y + balls[i].h > bricks[j].y) &&
+        //left of ball
+        if ( (balls[i].y + balls[i].h > bricks[j].y) &&
           (balls[i].y < bricks[j].y + bricks[j].h) &&
           (balls[i].x + balls[i].w > bricks[j].x) &&
-          (balls[i].x > bricks[j].x )){
-          console.log("text");
-          var dx = (balls[i].nextx+balls[i].velx) - balls[i].nextx;
-          var dy = (balls[i].nexty+balls[i].vely) - balls[i].nexty;
-          if (dx<0 && dy<0) {
-            //balls[i].vely *= -1;
-            balls[i].velx *= -1;
-          } else if (dx<0 && dy>0) {
-            //balls[i].vely *= -1;
-            balls[i].velx *= -1;
-          } else if (dx>0 && dy>0) {
-            //balls[i].vely *= -1;
-            balls[i].velx *= -1;
-          } else if (dx>0 && dy<0) {
-            //balls[i].vely *= -1;
-            balls[i].velx *= -1;
-          } 
-          //left needs to be done
-        }else if( (balls[i].y + balls[i].h > bricks[j].y) &&
+          (balls[i].x > bricks[j].x )) {
+          console.log("one");
+          balls[i].velx *= -1;
+          //right of ball
+        }else if ( (balls[i].y + balls[i].h > bricks[j].y) &&
           (balls[i].y < bricks[j].y + bricks[j].h) &&
-          (balls[i].x + balls[i].w > bricks[j].x) &&
-          (balls[i].x > bricks[j].x )){
-          console.log("text");
-          var dx = (balls[i].nextx+balls[i].velx) - balls[i].nextx;
-          var dy = (balls[i].nexty+balls[i].vely) - balls[i].nexty;
-          if (dx<0 && dy<0) {
-            //balls[i].vely *= -1;
-            balls[i].velx *= -1;
-          } else if (dx<0 && dy>0) {
-            //balls[i].vely *= -1;
-            balls[i].velx *= -1;
-          } else if (dx>0 && dy>0) {
-            //balls[i].vely *= -1;
-            balls[i].velx *= -1;
-          } else if (dx>0 && dy<0) {
-            //balls[i].vely *= -1;
-            balls[i].velx *= -1;
-          }
-
-        } else {  
-          var dx = (balls[i].nextx+balls[i].velx) - balls[i].nextx;
-          var dy = (balls[i].nexty+balls[i].vely) - balls[i].nexty;
-          if (dx<0 && dy<0) {
-            balls[i].vely *= -1;
-            //balls[i].velx *= -1;
-          } else if (dx<0 && dy>0) {
-            balls[i].vely *= -1;
-            //balls[i].velx *= -1;
-          } else if (dx>0 && dy>0) {
-            balls[i].vely *= -1;
-            //balls[i].velx *= -1;
-          } else if (dx>0 && dy<0) {
-            balls[i].vely *= -1;
-            //balls[i].velx *= -1;
-          }
+          (balls[i].x + balls[i].w < bricks[j].x) &&
+          (balls[i].x < bricks[j].x) ) {
+          console.log("two");
+          balls[i].velx *= -1;
+        } else {
+          balls[i].vely *= -1;
         }
         //console.log(dx+" "+dy)
-        
-      } 
+        //bricks[j].player ? false : bricks.splice(j,1);
+      }
     }
   }
 }
 
 // function boundingBoxCollide(object1, object2) {
-      
+
 //     var left1 = object1.x;
 //     var left2 = object2.x;
 //     var right1 = object1.x + object1.width;
@@ -116,13 +73,13 @@ var collide = function(){
 //     var top2 = object2.y;
 //     var bottom1 = object1.y + object1.height;
 //     var bottom2 = object2.y + object2.height;
-      
+
 //     if (bottom1 < top2) return(false);
 //     if (top1 > bottom2) return(false);
-      
+
 //     if (right1 < left2) return(false);
 //     if (left1 > right2) return(false);
-      
+
 //     return(true);
 
 //   };
@@ -193,27 +150,27 @@ var makeBricks = function(){
   bricks.push(brick);
 
 
-  // var brick = new Brick(0,0,400,10,"black");
-  // bricks.push(brick);
-  // var brick = new Brick(0,100,400,10,"black");
-  // bricks.push(brick);
+  var brick = new Brick(0,0,400,10,"black");
+  bricks.push(brick);
+  var brick = new Brick(0,100,400,10,"black");
+  bricks.push(brick);
 
-  var brick = new Brick(150,0,40,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(250,0,40,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(100,100,40,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(150,100,40,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(200,100,40,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(250,100,40,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(300,100,40,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(350,100,40,15,"black");
-  bricks.push(brick);
+  // var brick = new Brick(150,0,40,15,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(250,0,40,15,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(100,100,40,15,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(150,100,40,15,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(200,100,40,15,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(250,100,40,15,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(300,100,40,15,"black");
+  // bricks.push(brick);
+  // var brick = new Brick(350,100,40,15,"black");
+  // bricks.push(brick);
 }
 
 var drawBricks = function(){
@@ -233,7 +190,7 @@ var drawRenderBalls = function(){
     c.fillStyle = "blue";
     // c.fill();
     c.fillRect(balls[i].x,balls[i].y,balls[i].w,balls[i].h);
-  
+
   }
 }
 
