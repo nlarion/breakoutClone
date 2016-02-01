@@ -8,4 +8,5 @@
   <brick type="Inert" x="255" y="0" width="30" height="15" color="red"/>
   <brick type="Inert" x="305" y="0" width="30" height="15" color="red"/>
   <brick type="Inert" x="355" y="0" width="30" height="15" color="red"/>
+  <ball type="Normal" x="200" y="75" width="10" height="10" velx="3" vely="3" color="white"/>
 </level>

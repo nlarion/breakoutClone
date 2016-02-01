@@ -1,39 +1,31 @@
 // create level object to hold brick and ball objects
 function Level(currentLevel) {
   this.currentLevel = currentLevel;
-  this.levelConstruct;
+  this.levelConstructs = [[['Player',200,250,40,15,'red'],['Inert',5,0,30,15,'red'],['Inert',55,0,30,15,'red'],['Inert',105,0,30,15,'red'],['Inert',155,0,30,15,'red'],['Inert',205,0,30,15,'red'],['Inert',255,0,30,15,'red'],['Inert',305,0,30,15,'red'],['Inert',355,0,30,15,'red']],[],[]];
   this.bricks = [];
   this.balls = [];
   this.getCurrentLevelprops();
-
+  this.makeBall();
 }
 
+Level.prototype.makeBall = function(){
+  var ball = new Ball(200,75,10,10,3,3,"white");
+  ball.launched = true;
+  this.balls.push(ball);
+};
+
 Level.prototype.getCurrentLevelprops = function() {
-  //needs to be synchronous
-  if (window.ActiveXObject) {
-    xhr = new ActiveXObject("Microsoft.XMLHTTP");
-  } else {
-    xhr = new XMLHttpRequest();
-  }
-  xhr.open("GET", "0"+this.currentLevel+".xml", false);
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  //xhr.send("level=" + encodeURIComponent(level)); //this is for if you're doing php
-  xhr.send(null); //send null to kick off responce.
-  if (xhr.status == 200) {
-    var xml = xhr.responseXML;
-    var getballs = xml.documentElement.getElementsByTagName("brick");
-    for (var i = 0; i < getballs.length; i++) {
-      var pushtype = getballs[i].getAttribute("type");
-      var pushx = getballs[i].getAttribute("x");
-      var pushy = getballs[i].getAttribute("y");
-      var width = getballs[i].getAttribute("width");
-      var height = getballs[i].getAttribute("height");
-      var pushcolor = getballs[i].getAttribute("color");
-      var newBrick = new Brick(pushtype,pushx,pushy,width,height,pushcolor)
-      if(pushtype === 'Player') {
-        newBrick.player = true;
-      }
-      this.bricks.push(newBrick);
+  for (var i = 0; i < this.levelConstructs[this.currentLevel-1].length; i++) {
+    var pushtype = this.levelConstructs[this.currentLevel-1][i][0];
+    var pushx = this.levelConstructs[this.currentLevel-1][i][1];
+    var pushy = this.levelConstructs[this.currentLevel-1][i][2];
+    var width = this.levelConstructs[this.currentLevel-1][i][3];
+    var height = this.levelConstructs[this.currentLevel-1][i][4];
+    var pushcolor = this.levelConstructs[this.currentLevel-1][i][5];
+    var newBrick = new Brick(pushtype,pushx,pushy,width,height,pushcolor)
+    if(pushtype === 'Player') {
+      newBrick.player = true;
     }
+    this.bricks.push(newBrick);
   }
 };
