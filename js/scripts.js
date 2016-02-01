@@ -12,6 +12,7 @@ var Game = function(){
   this.$canvas = $('canvas');
   this.c = this.$canvas[0].getContext('2d');
   this.currentLevel = new Level(1);
+  this.currentPlayer = new Player();
 }
 
 Game.prototype.gameManager = function(){
@@ -89,7 +90,6 @@ Game.prototype.drawBricks = function(){
     this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     this.currentLevel.bricks[i].timer<50 ? this.currentLevel.bricks[i].timer++: false;
   }
-
 };
 
 Game.prototype.collide = function(){

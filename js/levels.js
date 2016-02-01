@@ -1,7 +1,17 @@
 // create level object to hold brick and ball objects
 function Level(currentLevel) {
   this.currentLevel = currentLevel;
-  this.levelConstructs = [[['Player',200,250,40,15,'red'],['Inert',5,0,30,15,'red'],['Inert',55,0,30,15,'red'],['Inert',105,0,30,15,'red'],['Inert',155,0,30,15,'red'],['Inert',205,0,30,15,'red'],['Inert',255,0,30,15,'red'],['Inert',305,0,30,15,'red'],['Inert',355,0,30,15,'red']],[],[]];
+  this.levelConstructs = [
+    [['Player',200,250,40,15,'red',0],
+    ['Inert',5,0,30,15,'red',10],
+    ['Inert',55,0,30,15,'red',10],
+    ['Inert',105,0,30,15,'red',10],
+    ['Inert',155,0,30,15,'red',10],
+    ['Inert',205,0,30,15,'red',10],
+    ['Inert',255,0,30,15,'red',10],
+    ['Inert',305,0,30,15,'red',10],
+    ['Inert',355,0,30,15,'red',10]],
+    [],[]];
   this.bricks = [];
   this.balls = [];
   this.getCurrentLevelprops();
@@ -22,7 +32,8 @@ Level.prototype.getCurrentLevelprops = function() {
     var width = this.levelConstructs[this.currentLevel-1][i][3];
     var height = this.levelConstructs[this.currentLevel-1][i][4];
     var pushcolor = this.levelConstructs[this.currentLevel-1][i][5];
-    var newBrick = new Brick(pushtype,pushx,pushy,width,height,pushcolor)
+    var pushScore = this.levelConstructs[this.currentLevel-1][i][6];
+    var newBrick = new Brick(pushtype,pushx,pushy,width,height,pushcolor,pushScore)
     if(pushtype === 'Player') {
       newBrick.player = true;
     }
