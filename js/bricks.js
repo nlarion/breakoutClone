@@ -8,7 +8,7 @@ var easeOutBack = function (t, b, c, d, s) {
   return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
 };
 
-var Brick = function(type,x,y,w,h,color){
+var Brick = function(type,x,y,w,h,color,score){
   this.x = x;
   this.y = y;
   this.w = w;
@@ -21,6 +21,7 @@ var Brick = function(type,x,y,w,h,color){
   this.player = false;
   this.type = type;
   this.timer = 0;
+  this.score = score;
 };
 
 //function Ball(x,y,r,velx,vely,color){
