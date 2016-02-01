@@ -13,6 +13,7 @@ var Game = function(){
   this.c = this.$canvas[0].getContext('2d');
   this.currentLevel = new Level(1);
   this.currentPlayer = new Player();
+
 }
 
 Game.prototype.gameManager = function(){
@@ -47,22 +48,27 @@ Game.prototype.gameManager = function(){
 };
 
 Game.prototype.gameLoop = function(){
-  this.c.fillStyle = "gray";
-  this.c.fillRect(0,0,canvas.width,canvas.height);
-  // if(this.firstRun === true){
-  //   makeBricks();
-  //   makeBall();
-  //   this.firstRun = false;
-  // }
-  this.c.font = "12px serif";
-  this.c.fillStyle = "#000000";
-  this.c.fillText ("FPS: "+fps.getFPS(), 20, 20);
+  this.clearCanvasAndDisplayDetails();
   this.updatePosition();
   this.collide();
   this.testWalls();
   this.drawBricks();
   this.drawRenderBalls();
 };
+
+Game.prototype.clearCanvasAndDisplayDetails = function(){
+  this.c.fillStyle = "gray";
+  this.c.fillRect(0,0,canvas.width,canvas.height);
+  this.c.font = "12px serif";
+  this.c.fillStyle = "#000000";
+  this.c.fillText ("FPS: "+fps.getFPS(), 20, 20);
+  this.c.fillText ("Score: " + this.currentPlayer.score, canvas.width-65, 20);
+  this.c.fillText ("Lives: ", 20, canvas.height - 20);
+  for (var i = 0; i < this.currentPlayer.lives-1; i++) {
+    this.c.fillStyle = "blue";
+    this.c.fillRect((i*20)+60,canvas.height -30,10,10);
+  }
+}
 
 Game.prototype.initApp = function(){
   this.introCount++;
@@ -111,7 +117,11 @@ Game.prototype.collide = function(){
         } else {
           this.currentLevel.balls[i].vely *= -1;
         }
-        this.currentLevel.bricks[j].player ? false : this.currentLevel.bricks.splice(j,1);
+        if(!this.currentLevel.bricks[j].player) {
+          this.currentPlayer.score += this.currentLevel.bricks[j].score;
+          this.currentLevel.bricks.splice(j,1);
+          console.log(this.currentPlayer.score);
+        }
       }
     }
   }
@@ -129,7 +139,15 @@ Game.prototype.testWalls = function(){
       this.currentLevel.balls[i].vely *= -1;
     }
     if(this.currentLevel.balls[i].nexty+this.currentLevel.balls[i].h>canvas.height){
-      this.currentLevel.balls[i].vely *= -1;
+      // this.currentLevel.balls[i].vely *= -1;
+      this.currentLevel.balls.splice(i,1);
+      if(this.currentLevel.balls.length === 0 && this.currentPlayer.lives > 1){
+        this.currentPlayer.lives --;
+        console.log(this.currentPlayer.lives);
+        this.currentLevel.makeBall();
+      } else {
+        console.log("you dun goofed up");
+      }
     }
   }
 };
