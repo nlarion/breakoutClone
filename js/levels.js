@@ -30,7 +30,7 @@ function Level(currentLevel) {
     ['Inert',350,0,125,100,25,'black',10],
     ['Inert',450,0,125,100,25,'white',10],
     ['Inert',550,0,125,100,25,'black',10],
-    ['Inert',650,0,125,100,25,'white',10],],
+    ['Inert',650,0,125,100,25,'white',10]],
     [],[]];
   this.bricks = [];
   this.balls = [];
@@ -49,11 +49,12 @@ Level.prototype.getCurrentLevelprops = function() {
     var pushtype = this.levelConstructs[this.currentLevel-1][i][0];
     var pushx = this.levelConstructs[this.currentLevel-1][i][1];
     var pushy = this.levelConstructs[this.currentLevel-1][i][2];
-    var width = this.levelConstructs[this.currentLevel-1][i][3];
-    var height = this.levelConstructs[this.currentLevel-1][i][4];
-    var pushcolor = this.levelConstructs[this.currentLevel-1][i][5];
-    var pushScore = this.levelConstructs[this.currentLevel-1][i][6];
-    var newBrick = new Brick(pushtype,pushx,pushy,width,height,pushcolor,pushScore)
+    var pushFinalY = this.levelConstructs[this.currentLevel-1][i][3];
+    var width = this.levelConstructs[this.currentLevel-1][i][4];
+    var height = this.levelConstructs[this.currentLevel-1][i][5];
+    var pushcolor = this.levelConstructs[this.currentLevel-1][i][6];
+    var pushScore = this.levelConstructs[this.currentLevel-1][i][7];
+    var newBrick = new Brick(pushtype,pushx,pushy,pushFinalY,width,height,pushcolor,pushScore)
     if(pushtype === 'Player') {
       newBrick.player = true;
     }
