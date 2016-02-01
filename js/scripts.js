@@ -3,7 +3,8 @@ const STATE_INIT = 10,
   STATE_RESET = 30,
   STATE_PLAYING = 40;
 var bricks = [],
-  balls = [];
+  balls = [],
+  levels = [[]];
 
 var Game = function(){
   this.firstRun = true;
@@ -13,7 +14,7 @@ var Game = function(){
   this.introCount = 0;
   this.$canvas = $('canvas');
   this.c = this.$canvas[0].getContext('2d');
-  this.currentLevel = 0;
+  this.currentLevel = new Level(1);
 }
 
 
@@ -24,7 +25,7 @@ Game.prototype.gameManager = function(){
     break;
   case STATE_LOADING:
     //load assets
-    this.pointImage.src = "images/point.png"; // load all assets now so 
+    this.pointImage.src = "images/point.png"; // load all assets now so
     this.$canvas.mousemove(function(e){
       bricks[0].x = e.offsetX-((bricks[0].w)/2);
       //console.log("x: "+e.offsetX+"y: "+e.offsetY);
@@ -71,7 +72,7 @@ Game.prototype.initApp = function(){
   this.c.fillStyle = '#0001' + colorModifier;
   this.c.fillRect(0, 0, canvas.width, canvas.height);
   //Box
-  this.c.strokeStyle = '#000000'; 
+  this.c.strokeStyle = '#000000';
   this.c.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
   this.c.font = " "+ canvas.width / 10 + "px serif";
   this.c.fillStyle = "#" + this.introCount + "";
@@ -110,4 +111,5 @@ Game.prototype.runTheGame = function(){
 $(function(){
   var game = new Game();
   game.runTheGame();
+  game.currentLevel.levelConstruct = levels[game.currentLevel.currentLevel-1];
 });

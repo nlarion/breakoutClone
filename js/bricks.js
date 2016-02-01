@@ -1,26 +1,4 @@
-var makeBricks = function(){
-  var brick = new Brick(200,250,40,15,"black");
-  brick.player=true;
-  brick.color = "black";
-  bricks.push(brick);
 
-  var brick = new Brick(5,0,30,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(55,0,30,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(105,0,30,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(155,0,30,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(205,0,30,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(255,0,30,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(305,0,30,15,"black");
-  bricks.push(brick);
-  var brick = new Brick(355,0,30,15,"black");
-  bricks.push(brick);
-};
 
 
 var updatePosition = function(){
@@ -75,7 +53,7 @@ var easeOutBack = function (t, b, c, d, s) {
 };
 
 
-function Brick(x,y,w,h,color){
+function Brick(type,x,y,w,h,color){
   this.x = x;
   this.y = y;
   this.w = w;
@@ -86,6 +64,7 @@ function Brick(x,y,w,h,color){
   this.nextx = 0;
   this.nexty = 0;
   this.player = false;
+  this.type = type;
   this.timer = 0;
 };
 
