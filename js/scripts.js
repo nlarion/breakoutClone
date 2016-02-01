@@ -84,8 +84,9 @@ Game.prototype.initApp = function(){
 Game.prototype.drawBricks = function(){
   for (var i = 0; i < this.currentLevel.bricks.length; i++) {
     //this.currentLevel.bricks[i].player ? false : this.currentLevel.bricks[i].y +=(200-this.currentLevel.bricks[i].y)*.1; //simple easing.
-    this.currentLevel.bricks[i].player ? false : this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,100,50);
-    this.c.fillStyle = "green";
+    this.currentLevel.bricks[i].player ? false : this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
+
+    this.c.fillStyle = this.currentLevel.bricks[i].color;
     this.currentLevel.bricks[i].player ? this.c.fillStyle = "black" : false
     this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     this.currentLevel.bricks[i].timer<50 ? this.currentLevel.bricks[i].timer++: false;

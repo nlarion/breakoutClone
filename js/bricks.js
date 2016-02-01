@@ -8,9 +8,10 @@ var easeOutBack = function (t, b, c, d, s) {
   return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
 };
 
-var Brick = function(type,x,y,w,h,color,score){
+var Brick = function(type,x,y,finalY,w,h,color,score){
   this.x = x;
   this.y = y;
+  this.finalY = finalY;
   this.w = w;
   this.h = h;
   this.velx = 0;
