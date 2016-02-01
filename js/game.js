@@ -63,18 +63,32 @@ var fps = {
 };
 
 var initApp = function(){
-  introCount++;
-  fadeIn = introCount + 30;
+  game.introCount++;
+  fadeIn = game.introCount + 30;
   colorModifier = fadeIn.toString(16);
-  c.fillStyle = '#0001' + colorModifier;
-  c.fillRect(0, 0, canvas.width, canvas.height);
+  game.c.fillStyle = '#0001' + colorModifier;
+  game.c.fillRect(0, 0, canvas.width, canvas.height);
   //Box
-  c.strokeStyle = '#000000'; 
-  c.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
-  c.font = " "+ canvas.width / 10 + "px serif";
-  c.fillStyle = "#" + introCount + "";
-  c.fillText ("Breakout",canvas.width / 3, canvas.height / 2);
-  if (introCount == 150 || isTheMouseBeingPressed == true) {
-    appState = STATE_LOADING;
+  game.c.strokeStyle = '#000000'; 
+  game.c.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+  game.c.font = " "+ canvas.width / 10 + "px serif";
+  game.c.fillStyle = "#" + game.introCount + "";
+  game.c.fillText ("Breakout",canvas.width / 3, canvas.height / 2);
+  if (game.introCount == 150 || game.isTheMouseBeingPressed == true) {
+    game.appState = STATE_LOADING;
   }
 }
+
+// //event handeler for non jquery if we go that way
+// function addEventHandler(oNode, evt, oFunc, bCaptures) {
+//   if (document.addEventListener) {
+//     // Safari, Chrome, Fx, etc
+//     oNode.addEventListener(evt, oFunc, bCaptures);
+//   } else if (document.attachEvent) {
+//     // IE
+//     oNode.attachEvent('on' + evt, oFunc);
+//   } else {
+//     // If all else fails
+//     oNode['on' + evt] = oFunc;
+//   }
+// }

@@ -20,7 +20,7 @@ var makeBricks = function(){
   bricks.push(brick);
   var brick = new Brick(355,0,30,15,"black");
   bricks.push(brick);
-}
+};
 
 
 var updatePosition = function(){
@@ -28,7 +28,7 @@ var updatePosition = function(){
     balls[i].nextx += balls[i].velx;
     balls[i].nexty += balls[i].vely;
   }
-}
+};
 
 var makeBall = function(){
   // var ball = new Ball(20,240,7,0,0,"white");
@@ -43,28 +43,28 @@ var makeBall = function(){
   // var ball = new Ball(200,75,10,3,-3,"white");
   // ball.launched = true;
   // balls.push(ball);
-}
+};
 
 var timer = 0;
 var drawBricks = function(){
   for (var i = 0; i < bricks.length; i++) {
     //bricks[i].player ? false : bricks[i].y +=(200-bricks[i].y)*.1; //simple easing.
     bricks[i].player ? false : bricks[i].y = easeOutBack(timer,0,100,50);
-    c.fillStyle = "green";
-    bricks[i].player ? c.fillStyle = "black" : false
-    c.fillRect(bricks[i].x,bricks[i].y,bricks[i].w,bricks[i].h);
+    game.c.fillStyle = "green";
+    bricks[i].player ? game.c.fillStyle = "black" : false
+    game.c.fillRect(bricks[i].x,bricks[i].y,bricks[i].w,bricks[i].h);
   }
   timer<50 ? timer++: false;
-}
+};
 
 var drawRenderBalls = function(){
   for (var i = 0; i < balls.length; i++) {
     balls[i].x = balls[i].nextx;
     balls[i].y = balls[i].nexty;
-    c.fillStyle = "blue";
-    c.fillRect(balls[i].x,balls[i].y,balls[i].w,balls[i].h);
+    game.c.fillStyle = "blue";
+    game.c.fillRect(balls[i].x,balls[i].y,balls[i].w,balls[i].h);
   }
-}
+};
 
 // t: current time, b: begInnIng value, c: change In value, d: duration
 //var somevar = easeOutBack(0,0,100,100)//start
@@ -72,7 +72,7 @@ var drawRenderBalls = function(){
 var easeOutBack = function (t, b, c, d, s) {
   if (s == undefined) s = 1.70158;
   return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
-}
+};
 
 
 function Brick(x,y,w,h,color){
@@ -86,7 +86,7 @@ function Brick(x,y,w,h,color){
   this.nextx = 0;
   this.nexty = 0;
   this.player = false;
-}
+};
 
 //function Ball(x,y,r,velx,vely,color){
 function Ball(x,y,w,h,velx,vely,color){
@@ -101,4 +101,4 @@ function Ball(x,y,w,h,velx,vely,color){
   this.nextx = x;
   this.nexty = y;
   this.launched = false;
-}
+};
