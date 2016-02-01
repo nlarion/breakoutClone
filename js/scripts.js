@@ -1,7 +1,8 @@
 const STATE_INIT = 10,
   STATE_LOADING = 20,
   STATE_RESET = 30,
-  STATE_PLAYING = 40;
+  STATE_PLAYING = 40,
+  STATE_GAMEOVER = 50;
 
 var Game = function(){
   this.firstRun = true;
@@ -41,11 +42,25 @@ Game.prototype.gameManager = function(){
   case STATE_RESET:
     resetApp(); //doesn't exist yet
     break;
+  case STATE_GAMEOVER:
+    this.gameOverScreen();
+    break;
   case STATE_PLAYING:
     this.gameLoop();
     break;
   }
 };
+
+Game.prototype.gameOverScreen = function(){
+
+  this.c.fillStyle = '#000111';
+  this.c.fillRect(0, 0, canvas.width, canvas.height);
+  //Box
+  this.c.strokeStyle = '#000000';
+  this.c.font = " "+ canvas.width / 10 + "px serif";
+  this.c.fillStyle = "#fff";
+  this.c.fillText ("GameOver :(",canvas.width / 4, canvas.height / 2);
+}
 
 Game.prototype.gameLoop = function(){
   this.clearCanvasAndDisplayDetails();
@@ -143,11 +158,11 @@ Game.prototype.testWalls = function(){
       // this.currentLevel.balls[i].vely *= -1;
       this.currentLevel.balls.splice(i,1);
       if(this.currentLevel.balls.length === 0 && this.currentPlayer.lives > 1){
-        this.currentPlayer.lives --;
+        this.currentPlayer.lives--;
         console.log(this.currentPlayer.lives);
         this.currentLevel.makeBall();
       } else {
-        console.log("you dun goofed up");
+        this.appState = STATE_GAMEOVER;
       }
     }
   }
