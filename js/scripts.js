@@ -64,16 +64,6 @@ Game.prototype.gameLoop = function(){
   this.drawRenderBalls();
 };
 
-Game.prototype.runTheGame = function(){
-  var t = this;
-  setInterval(function(){t.gameManager();}, 30);
-};
-
-$(function(){
-  var game = new Game();
-  game.runTheGame();
-});
-
 Game.prototype.initApp = function(){
   this.introCount++;
   fadeIn = this.introCount + 30;
@@ -90,7 +80,6 @@ Game.prototype.initApp = function(){
     this.appState = STATE_LOADING;
   }
 }
-
 
 Game.prototype.drawBricks = function(){
   for (var i = 0; i < bricks.length; i++) {
@@ -112,3 +101,13 @@ Game.prototype.drawRenderBalls = function(){
     this.c.fillRect(balls[i].x,balls[i].y,balls[i].w,balls[i].h);
   }
 };
+
+Game.prototype.runTheGame = function(){
+  var t = this;
+  setInterval(function(){t.gameManager();}, 30);
+};
+
+$(function(){
+  var game = new Game();
+  game.runTheGame();
+});
