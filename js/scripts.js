@@ -16,17 +16,16 @@ var Game = function(){
   this.currentLevel = 0;
 }
 
-var game = new Game();
 
-var gameManager = function(){
-  switch (game.appState) {
+Game.prototype.gameManager = function(){
+  switch (this.appState) {
   case STATE_INIT:
-    initApp(); // intro screen
+    this.initApp(); // intro screen
     break;
   case STATE_LOADING:
     //load assets
-    game.pointImage.src = "images/point.png"; // load all assets now so 
-    game.$canvas.mousemove(function(e){
+    this.pointImage.src = "images/point.png"; // load all assets now so 
+    this.$canvas.mousemove(function(e){
       bricks[0].x = e.offsetX-((bricks[0].w)/2);
       //console.log("x: "+e.offsetX+"y: "+e.offsetY);
       for (var i = 0; i < balls.length; i++) {
@@ -36,39 +35,80 @@ var gameManager = function(){
         }
       }
     });
-    game.appState = STATE_PLAYING;
+    this.appState = STATE_PLAYING;
     break;
   case STATE_RESET:
     resetApp(); //doesn't exist yet
     break;
   case STATE_PLAYING:
-    gameLoop();
+    this.gameLoop();
     break;
   }
-}
+};
 
-var gameLoop = function(){
-  game.c.fillStyle = "gray";
-  game.c.fillRect(0,0,canvas.width,canvas.height);
-  if(game.firstRun === true){
+Game.prototype.gameLoop = function(){
+  this.c.fillStyle = "gray";
+  this.c.fillRect(0,0,canvas.width,canvas.height);
+  if(this.firstRun === true){
     makeBricks();
     makeBall();
-    game.firstRun = false;
+    this.firstRun = false;
   }
-  game.c.font = "12px serif";
-  game.c.fillStyle = "#000000";
-  game.c.fillText ("FPS: "+fps.getFPS(), 20, 20);
+  this.c.font = "12px serif";
+  this.c.fillStyle = "#000000";
+  this.c.fillText ("FPS: "+fps.getFPS(), 20, 20);
   updatePosition();
   collide();
   testWalls();
-  drawBricks();
-  drawRenderBalls();
-}
+  this.drawBricks();
+  this.drawRenderBalls();
+};
 
-var runTheGame = function(){
-  setInterval(gameManager, 30);
-}
+Game.prototype.runTheGame = function(){
+  var t = this;
+  setInterval(function(){t.gameManager();}, 30);
+};
 
 $(function(){
-  runTheGame();
+  var game = new Game();
+  game.runTheGame();
 });
+
+Game.prototype.initApp = function(){
+  this.introCount++;
+  fadeIn = this.introCount + 30;
+  colorModifier = fadeIn.toString(16);
+  this.c.fillStyle = '#0001' + colorModifier;
+  this.c.fillRect(0, 0, canvas.width, canvas.height);
+  //Box
+  this.c.strokeStyle = '#000000'; 
+  this.c.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+  this.c.font = " "+ canvas.width / 10 + "px serif";
+  this.c.fillStyle = "#" + this.introCount + "";
+  this.c.fillText ("Breakout",canvas.width / 3, canvas.height / 2);
+  if (this.introCount == 150 || this.isTheMouseBeingPressed == true) {
+    this.appState = STATE_LOADING;
+  }
+}
+
+
+Game.prototype.drawBricks = function(){
+  for (var i = 0; i < bricks.length; i++) {
+    //bricks[i].player ? false : bricks[i].y +=(200-bricks[i].y)*.1; //simple easing.
+    bricks[i].player ? false : bricks[i].y = easeOutBack(bricks[i].timer,0,100,50);
+    this.c.fillStyle = "green";
+    bricks[i].player ? this.c.fillStyle = "black" : false
+    this.c.fillRect(bricks[i].x,bricks[i].y,bricks[i].w,bricks[i].h);
+    bricks[i].timer<50 ? bricks[i].timer++: false;
+  }
+
+};
+
+Game.prototype.drawRenderBalls = function(){
+  for (var i = 0; i < balls.length; i++) {
+    balls[i].x = balls[i].nextx;
+    balls[i].y = balls[i].nexty;
+    this.c.fillStyle = "blue";
+    this.c.fillRect(balls[i].x,balls[i].y,balls[i].w,balls[i].h);
+  }
+};

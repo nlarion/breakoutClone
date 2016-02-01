@@ -45,26 +45,26 @@ var makeBall = function(){
   // balls.push(ball);
 };
 
-var timer = 0;
-var drawBricks = function(){
-  for (var i = 0; i < bricks.length; i++) {
-    //bricks[i].player ? false : bricks[i].y +=(200-bricks[i].y)*.1; //simple easing.
-    bricks[i].player ? false : bricks[i].y = easeOutBack(timer,0,100,50);
-    game.c.fillStyle = "green";
-    bricks[i].player ? game.c.fillStyle = "black" : false
-    game.c.fillRect(bricks[i].x,bricks[i].y,bricks[i].w,bricks[i].h);
-  }
-  timer<50 ? timer++: false;
-};
+// var timer = 0;
+// var drawBricks = function(){
+//   for (var i = 0; i < bricks.length; i++) {
+//     //bricks[i].player ? false : bricks[i].y +=(200-bricks[i].y)*.1; //simple easing.
+//     bricks[i].player ? false : bricks[i].y = easeOutBack(timer,0,100,50);
+//     game.c.fillStyle = "green";
+//     bricks[i].player ? game.c.fillStyle = "black" : false
+//     game.c.fillRect(bricks[i].x,bricks[i].y,bricks[i].w,bricks[i].h);
+//   }
+//   timer<50 ? timer++: false;
+// };
 
-var drawRenderBalls = function(){
-  for (var i = 0; i < balls.length; i++) {
-    balls[i].x = balls[i].nextx;
-    balls[i].y = balls[i].nexty;
-    game.c.fillStyle = "blue";
-    game.c.fillRect(balls[i].x,balls[i].y,balls[i].w,balls[i].h);
-  }
-};
+// var drawRenderBalls = function(){
+//   for (var i = 0; i < balls.length; i++) {
+//     balls[i].x = balls[i].nextx;
+//     balls[i].y = balls[i].nexty;
+//     game.c.fillStyle = "blue";
+//     game.c.fillRect(balls[i].x,balls[i].y,balls[i].w,balls[i].h);
+//   }
+// };
 
 // t: current time, b: begInnIng value, c: change In value, d: duration
 //var somevar = easeOutBack(0,0,100,100)//start
@@ -86,6 +86,7 @@ function Brick(x,y,w,h,color){
   this.nextx = 0;
   this.nexty = 0;
   this.player = false;
+  this.timer = 0;
 };
 
 //function Ball(x,y,r,velx,vely,color){
