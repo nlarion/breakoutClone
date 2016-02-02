@@ -221,14 +221,18 @@ Game.prototype.collide = function(){
 };
 
 Game.prototype.doCollide = function(i,j){
-  console.log(this.currentLevel.bricks[j]);
-  if(!this.currentLevel.bricks[j].player) {
+  console.log(this.currentLevel.winCriteria);
+  if(this.currentLevel.bricks[j].type==="Durable" || this.currentLevel.bricks[j].type==="Inert" || this.currentLevel.bricks[j].type==="Speedy") {
     this.currentPlayer.score += this.currentLevel.bricks[j].score;
     this.currentLevel.bricks[j].life -= 1;
+    if(this.currentLevel.bricks[j].type === "Speedy") {
+      this.currentLevel.balls[i].velx += 1.15;
+      this.currentLevel.balls[i].vely += 1.15;
+    }
     if(this.currentLevel.bricks[j].life === 0) {
       this.currentLevel.bricks.splice(j,1);
     }
-    if(this.currentLevel.bricks.length === 1  && this.currentPlayer.lives>0){
+    if(this.currentLevel.bricks.length === this.currentLevel.winCriteria && this.currentPlayer.lives>0){
       this.level++;
       console.log(levelConstructs.length);
       if(levelConstructs.length===1){
@@ -261,7 +265,6 @@ Game.prototype.testWalls = function(){
       this.currentLevel.balls.splice(i,1);
       if(this.currentLevel.balls.length === 0 && this.currentPlayer.lives > 1){
         this.currentPlayer.lives--;
-        console.log(this.currentPlayer.lives);
         this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
       } else {
         this.appState = STATE_GAMEOVER;
