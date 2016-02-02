@@ -13,6 +13,7 @@ var Game = function(){
   this.introCount = 0;
   this.$canvas = $('canvas');
   this.c = this.$canvas[0].getContext('2d');
+  this.level = 1;
   this.currentLevel = new Level(1);
   this.currentPlayer = new Player();
 
@@ -28,7 +29,6 @@ Game.prototype.gameManager = function(){
     this.pointImage.src = "images/point.png"; // load all assets now so
     var t = this;
     this.$canvas.mousemove(function(e){
-      console.log(t);
       t.currentLevel.bricks[0].x = e.offsetX-((t.currentLevel.bricks[0].w)/2);
       //console.log("x: "+e.offsetX+"y: "+e.offsetY);
       for (var i = 0; i < t.currentLevel.balls.length; i++) {
@@ -150,12 +150,27 @@ Game.prototype.collide = function(){
         if(!this.currentLevel.bricks[j].player) {
           this.currentPlayer.score += this.currentLevel.bricks[j].score;
           this.currentLevel.bricks.splice(j,1);
+          if(this.currentLevel.bricks.length === 1  && this.currentPlayer.lives>0){
+            this.level++;
+            console.log(levelConstructs.length);
+            if(levelConstructs.length===1){
+              this.appState = STATE_WIN;
+            }else{
+
+              levelConstructs.splice(0,1);
+              this.currentLevel = new Level(1);
+              //console.log(this.currentLevel);
+              //console.log(levelConstructs);
+            }
+          }
           console.log(this.currentPlayer.score);
         }
       }
     }
   }
 };
+
+
 
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
