@@ -169,12 +169,13 @@ Game.prototype.drawBricks = function(){
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
     }
     this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx;
-    var match = /rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(,\s*\d+[\.\d+]*)*\)/g
-    var testArr = match.exec(this.currentLevel.bricks[i].color);
-    this.currentLevel.bricks[i].color= "rgba(" + [testArr[1],testArr[2],testArr[3],(this.currentLevel.bricks[i].life/this.currentLevel.bricks[i].maxLife)].join(',') +")";
     this.c.fillStyle = this.currentLevel.bricks[i].color;
-    this.currentLevel.bricks[i].player ? this.c.fillStyle = "black" : false
     this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    if(this.currentLevel.bricks[i].type==="Durable" && this.currentLevel.bricks[i].life>1){
+      this.c.fillStyle = "rgba(0,0,0,.5)";
+      this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    }
+
     this.currentLevel.bricks[i].timer<50 ? this.currentLevel.bricks[i].timer++: false;
   }
 
