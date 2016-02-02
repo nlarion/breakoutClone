@@ -1,7 +1,9 @@
 const STATE_INIT = 10,
   STATE_LOADING = 20,
   STATE_RESET = 30,
-  STATE_PLAYING = 40;
+  STATE_PLAYING = 40,
+  STATE_GAMEOVER = 50,
+  STATE_WIN = 60;
 
 var Game = function(){
   this.firstRun = true;
@@ -11,6 +13,7 @@ var Game = function(){
   this.introCount = 0;
   this.$canvas = $('canvas');
   this.c = this.$canvas[0].getContext('2d');
+  this.level = 1;
   this.currentLevel = new Level(1);
   this.currentPlayer = new Player();
 
@@ -42,10 +45,37 @@ Game.prototype.gameManager = function(){
   case STATE_RESET:
     resetApp(); //doesn't exist yet
     break;
+  case STATE_GAMEOVER:
+    this.gameOverScreen();
+    break;
   case STATE_PLAYING:
     this.gameLoop();
     break;
+  case STATE_WIN:
+    this.winnerScreen();
+    break;
   }
+};
+
+Game.prototype.gameOverScreen = function(){
+
+  this.c.fillStyle = '#000111';
+  this.c.fillRect(0, 0, canvas.width, canvas.height);
+  //Box
+  this.c.strokeStyle = '#000000';
+  this.c.font = " "+ canvas.width / 10 + "px serif";
+  this.c.fillStyle = "#fff";
+  this.c.fillText ("GameOver :(",canvas.width / 4, canvas.height / 2);
+}
+
+Game.prototype.winnerScreen = function() {
+  this.c.fillStyle = '#000111';
+  this.c.fillRect(0, 0, canvas.width, canvas.height);
+  //Box
+  this.c.strokeStyle = '#000000';
+  this.c.font = " "+ canvas.width / 10 + "px serif";
+  this.c.fillStyle = "#fff";
+  this.c.fillText ("You Won!",canvas.width / 4, canvas.height / 2);
 };
 
 Game.prototype.gameLoop = function(){
@@ -125,12 +155,27 @@ Game.prototype.collide = function(){
         if(!this.currentLevel.bricks[j].player) {
           this.currentPlayer.score += this.currentLevel.bricks[j].score;
           this.currentLevel.bricks.splice(j,1);
+          if(this.currentLevel.bricks.length === 1  && this.currentPlayer.lives>0){
+            this.level++;
+            console.log(levelConstructs.length);
+            if(levelConstructs.length===1){
+              this.appState = STATE_WIN;
+            }else{
+
+              levelConstructs.splice(0,1);
+              this.currentLevel = new Level(1);
+              //console.log(this.currentLevel);
+              //console.log(levelConstructs);
+            }
+          }
           console.log(this.currentPlayer.score);
         }
       }
     }
   }
 };
+
+
 
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
@@ -148,11 +193,11 @@ Game.prototype.testWalls = function(){
       this.isTheMouseBeingPressed = false;
       this.currentLevel.balls.splice(i,1);
       if(this.currentLevel.balls.length === 0 && this.currentPlayer.lives > 1){
-        this.currentPlayer.lives --;
+        this.currentPlayer.lives--;
         console.log(this.currentPlayer.lives);
         this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
       } else {
-        console.log("you dun goofed up");
+        this.appState = STATE_GAMEOVER;
       }
     }
   }
