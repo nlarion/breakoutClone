@@ -29,7 +29,7 @@ var LevelConstruct = function(){
     ['Inert',350,0,125,100,25,'lightblue',10],
     ['Inert',450,0,125,100,25,'yellow',10],
     ['Inert',550,0,125,100,25,'lightblue',10],
-    ['Inert',650,0,125,100,25,'yellow',10] ],
+    ['Speedy',650,0,125,100,25,'yellow',10] ],
 
     [['Player',200,550,250,65,15,'black',0],
     ['Inert',50,0,100,100,25,'white',10],
@@ -106,8 +106,10 @@ var Level = function(currentLevel) {
   this.currentLevel = currentLevel;
   this.bricks = [];
   this.balls = [];
+  this.winCriteria = 0;
   this.getCurrentLevelprops();
   this.makeBall(394,538);
+
 }
 
 Level.prototype.makeBall = function(x,y){
@@ -131,10 +133,14 @@ Level.prototype.getCurrentLevelprops = function() {
     if(pushtype === 'Player') {
       newBrick.player = true;
       newBrick.life = 1;
-    } else if (pushtype === 'Inert') {
+      this.winCriteria++;
+    } else if (pushtype === 'Inert' || pushtype === "Speedy") {
       newBrick.life = 1;
     } else if (pushtype === 'Durable') {
       newBrick.life = 2;
+    } else if (pushtype === 'Steady') {
+      this.winCriteria++;
+      newBrick.life = 1;
     }
     this.bricks.push(newBrick);
   }
