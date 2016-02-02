@@ -70,7 +70,7 @@ function Level(currentLevel) {
 }
 
 Level.prototype.makeBall = function(x,y){
-  var ball = new Ball(x,y,12,12,6,-6,"white");
+  var ball = new Ball(x,y,12,12,5,-5,"white");
   ball.launched = false;
   this.balls.push(ball);
 };
