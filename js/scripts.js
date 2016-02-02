@@ -84,6 +84,16 @@ Game.prototype.gameOverScreen = function(){
   this.c.font = " "+ canvas.width / 10 + "px serif";
   this.c.fillStyle = "#fff";
   this.c.fillText ("GameOver :(",canvas.width / 4, canvas.height / 2);
+  this.c.font = " "+ canvas.width / 30 + "px serif";
+  this.c.fillText("Click to Try Again...",canvas.width / 2.8, canvas.height / 1.5);
+  if (this.isTheMouseBeingPressed == true) {
+    this.isTheMouseBeingPressed = false;
+    levelConstructs = new LevelConstruct();
+    this.level = 1;
+    this.currentLevel = new Level(1);
+    this.currentPlayer = new Player();
+    this.appState = STATE_INIT;
+  }
 }
 
 Game.prototype.winnerScreen = function() {
