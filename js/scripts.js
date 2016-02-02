@@ -178,10 +178,15 @@ Game.prototype.drawBricks = function(){
     }
     this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx;
     this.c.fillStyle = this.currentLevel.bricks[i].color;
-    this.currentLevel.bricks[i].player ? this.c.fillStyle = "black" : false
     this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    if(this.currentLevel.bricks[i].type==="Durable" && this.currentLevel.bricks[i].life>1){
+      this.c.fillStyle = "rgba(0,0,0,.5)";
+      this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    }
+
     this.currentLevel.bricks[i].timer<50 ? this.currentLevel.bricks[i].timer++: false;
   }
+
 };
 
 Game.prototype.collide = function(){
@@ -209,29 +214,34 @@ Game.prototype.collide = function(){
           this.currentLevel.balls[i].vely *= -(1 + .05);
           this.currentLevel.balls[i].velx += .05;//+0.5 increases the ball speed every time it hits something.
         }
-        if(!this.currentLevel.bricks[j].player) {
-          this.currentPlayer.score += this.currentLevel.bricks[j].score;
-          this.currentLevel.bricks.splice(j,1);
-          if(this.currentLevel.bricks.length === 1  && this.currentPlayer.lives>0){
-            this.level++;
-            console.log(levelConstructs.length);
-            if(levelConstructs.length===1){
-              this.appState = STATE_WIN;
-              // this.appState = STATE_CREDITS_SCREEN;
-            }else {
-              this.isTheMouseBeingPressed = false
-              this.appState = STATE_LOADING_LEVEL;
-            }
-              //console.log(this.currentLevel);
-              //console.log(levelConstructs);
-          }
-          console.log(this.currentPlayer.score);
-        }
+        this.doCollide(i,j);
       }
     }
   }
 };
 
+Game.prototype.doCollide = function(i,j){
+  console.log(this.currentLevel.bricks[j]);
+  if(!this.currentLevel.bricks[j].player) {
+    this.currentPlayer.score += this.currentLevel.bricks[j].score;
+    this.currentLevel.bricks[j].life -= 1;
+    if(this.currentLevel.bricks[j].life === 0) {
+      this.currentLevel.bricks.splice(j,1);
+    }
+    if(this.currentLevel.bricks.length === 1  && this.currentPlayer.lives>0){
+      this.level++;
+      console.log(levelConstructs.length);
+      if(levelConstructs.length===1){
+        this.appState = STATE_WIN;
+      }else{
+        this.isTheMouseBeingPressed = false;
+        this.appState = STATE_LOADING_LEVEL;
+        //console.log(this.currentLevel);
+        //console.log(levelConstructs);
+      }
+    }
+  }
+}
 
 
 Game.prototype.testWalls = function(){
