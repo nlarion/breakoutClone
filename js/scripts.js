@@ -5,6 +5,7 @@ const STATE_INIT = 10,
   STATE_GAMEOVER = 50,
   STATE_WIN = 60,
   STATE_LOADING_LEVEL = 70;
+  STATE_CREDITS_SCREEN = 80;
 
 var Game = function(){
   this.firstRun = true;
@@ -44,6 +45,9 @@ Game.prototype.gameManager = function(){
   case STATE_GAMEOVER:
     this.gameOverScreen();
     break;
+  // case STATE_CREDITS_SCREEN:
+  //   this.creditsScreen();
+  //   break;
   case STATE_PLAYING:
     this.gameLoop();
     break;
@@ -53,6 +57,7 @@ Game.prototype.gameManager = function(){
   case STATE_LOADING_LEVEL:
     this.loadingLevelScreen();
     break;
+
   }
 };
 
@@ -97,6 +102,7 @@ Game.prototype.gameOverScreen = function(){
 }
 
 Game.prototype.winnerScreen = function() {
+  //new code
   this.c.fillStyle = '#000111';
   this.c.fillRect(0, 0, canvas.width, canvas.height);
   //Box
@@ -104,6 +110,8 @@ Game.prototype.winnerScreen = function() {
   this.c.font = " "+ canvas.width / 10 + "px serif";
   this.c.fillStyle = "#fff";
   this.c.fillText ("You Won!",canvas.width / 4, canvas.height / 2);
+  this.c.font = " "+ canvas.width / 30 + "px serif";
+  this.c.fillText("Game by: Neil Larion, Matt Rosanio, Will Johnson, and Michael Smith", canvas.width / 40, canvas.height / 1.5);
 };
 
 Game.prototype.gameLoop = function(){
@@ -176,8 +184,6 @@ Game.prototype.drawBricks = function(){
   }
 };
 
-
-
 Game.prototype.collide = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     for (var j = 0; j < this.currentLevel.bricks.length; j++) {
@@ -211,12 +217,13 @@ Game.prototype.collide = function(){
             console.log(levelConstructs.length);
             if(levelConstructs.length===1){
               this.appState = STATE_WIN;
-            }else{
-              this.isTheMouseBeingPressed = false;
+              // this.appState = STATE_CREDITS_SCREEN;
+            }else {
+              this.isTheMouseBeingPressed = false
               this.appState = STATE_LOADING_LEVEL;
+            }
               //console.log(this.currentLevel);
               //console.log(levelConstructs);
-            }
           }
           console.log(this.currentPlayer.score);
         }
