@@ -1,35 +1,35 @@
 // create level object to hold brick and ball objects
 var LevelConstruct = function(){
   return [
-    [ ['Player',200,550,250,65,15,'red',0],
-    ['Inert',50,0,50,100,25,'black',10],
-    ['Inert',150,0,50,100,25,'white',10],
-    ['Inert',250,0,50,100,25,'black',10],
-    ['Inert',350,0,50,100,25,'white',10],
-    ['Inert',450,0,50,100,25,'black',10],
-    ['Inert',550,0,50,100,25,'white',10],
-    ['Inert',650,0,50,100,25,'black',10],
-    ['Inert',50,0,75,100,25,'white',10],
-    ['Inert',150,0,75,100,25,'black',10],
-    ['Inert',250,0,75,100,25,'white',10],
-    ['Inert',350,0,75,100,25,'black',10],
-    ['Inert',450,0,75,100,25,'white',10],
-    ['Inert',550,0,75,100,25,'black',10],
-    ['Inert',650,0,75,100,25,'white',10],
-    ['Inert',50,0,100,100,25,'black',10],
-    ['Inert',150,0,100,100,25,'white',10],
-    ['Inert',250,0,100,100,25,'black',10],
-    ['Inert',350,0,100,100,25,'white',10],
-    ['Inert',450,0,100,100,25,'black',10],
-    ['Inert',550,0,100,100,25,'white',10],
-    ['Inert',650,0,100,100,25,'black',10],
-    ['Inert',50,0,125,100,25,'white',10],
-    ['Inert',150,0,125,100,25,'black',10],
-    ['Inert',250,0,125,100,25,'white',10],
-    ['Inert',350,0,125,100,25,'black',10],
-    ['Inert',450,0,125,100,25,'white',10],
-    ['Inert',550,0,125,100,25,'black',10],
-    ['Inert',650,0,125,100,25,'white',10] ],
+    [ ['Player',200,550,250,65,15,'rgba(255,255,255)',0],
+    ['Inert',50,0,50,100,25,'rgba(255,255,255)',10],
+    ['Inert',150,0,50,100,25,'rgba(0,0,0)',10],
+    ['Inert',250,0,50,100,25,'rgba(255,255,255)',10],
+    ['Inert',350,0,50,100,25,'rgba(0,0,0)',10],
+    ['Inert',450,0,50,100,25,'rgba(255,255,255)',10],
+    ['Inert',550,0,50,100,25,'rgba(0,0,0)',10],
+    ['Inert',650,0,50,100,25,'rgba(255,255,255)',10],
+    ['Inert',50,0,75,100,25,'rgba(0,0,0)',10],
+    ['Inert',150,0,75,100,25,'rgba(255,255,255)',10],
+    ['Inert',250,0,75,100,25,'rgba(0,0,0)',10],
+    ['Inert',350,0,75,100,25,'rgba(255,255,255)',10],
+    ['Inert',450,0,75,100,25,'rgba(0,0,0)',10],
+    ['Inert',550,0,75,100,25,'rgba(255,255,255)',10],
+    ['Inert',650,0,75,100,25,'rgba(0,0,0)',10],
+    ['Inert',50,0,100,100,25,'rgba(255,255,255)',10],
+    ['Inert',150,0,100,100,25,'rgba(0,0,0)',10],
+    ['Inert',250,0,100,100,25,'rgba(255,255,255)',10],
+    ['Inert',350,0,100,100,25,'rgba(0,0,0)',10],
+    ['Inert',450,0,100,100,25,'rgba(255,255,255)',10],
+    ['Inert',550,0,100,100,25,'rgba(0,0,0)',10],
+    ['Inert',650,0,100,100,25,'rgba(255,255,255)',10],
+    ['Inert',50,0,125,100,25,'rgba(0,0,0)',10],
+    ['Inert',150,0,125,100,25,'rgba(255,255,255)',10],
+    ['Inert',250,0,125,100,25,'rgba(0,0,0)',10],
+    ['Inert',350,0,125,100,25,'rgba(255,255,255)',10],
+    ['Inert',450,0,125,100,25,'rgba(0,0,0)',10],
+    ['Inert',550,0,125,100,25,'rgba(255,255,255)',10],
+    ['Inert',650,0,125,100,25,'rgba(0,0,0)',10] ],
 
     [['Player',200,550,250,65,15,'red',0],
     ['Inert',50,0,100,100,25,'white',10],
@@ -87,13 +87,17 @@ Level.prototype.getCurrentLevelprops = function() {
     var pushcolor = levelConstructs[this.currentLevel-1][i][6];
     var pushScore = levelConstructs[this.currentLevel-1][i][7];
     var newBrick = new Brick(pushtype,pushx,pushy,pushFinalY,width,height,pushcolor,pushScore);
-    console.log(newBrick);
+    //console.log(newBrick);
     if(pushtype === 'Player') {
       newBrick.player = true;
+      newBrick.life = 1;
+      newBrick.maxLife = 1;
     } else if (pushtype === 'Inert') {
-      newBrick.life = 2;
+      newBrick.life = 1;
+      newBrick.maxLife = 1;
     } else if (pushtype === 'Durable') {
       newBrick.life = 2;
+      newBrick.maxLife = 2;
     }
     this.bricks.push(newBrick);
   }
