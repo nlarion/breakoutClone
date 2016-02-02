@@ -86,9 +86,14 @@ Level.prototype.getCurrentLevelprops = function() {
     var height = levelConstructs[this.currentLevel-1][i][5];
     var pushcolor = levelConstructs[this.currentLevel-1][i][6];
     var pushScore = levelConstructs[this.currentLevel-1][i][7];
-    var newBrick = new Brick(pushtype,pushx,pushy,pushFinalY,width,height,pushcolor,pushScore)
+    var newBrick = new Brick(pushtype,pushx,pushy,pushFinalY,width,height,pushcolor,pushScore);
+    console.log(newBrick);
     if(pushtype === 'Player') {
       newBrick.player = true;
+    } else if (pushtype === 'Inert') {
+      newBrick.life = 2;
+    } else if (pushtype === 'Durable') {
+      newBrick.life = 2;
     }
     this.bricks.push(newBrick);
   }
