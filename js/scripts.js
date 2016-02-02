@@ -277,12 +277,18 @@ Game.prototype.drawRenderBalls = function(){
       this.currentLevel.balls[i].nextx = this.currentLevel.balls[i].x;
       this.currentLevel.balls[i].nexty = this.currentLevel.balls[i].y;
       this.c.fillStyle = "blue";
-      this.c.fillRect(this.currentLevel.balls[i].x,this.currentLevel.balls[i].y,this.currentLevel.balls[i].w,this.currentLevel.balls[i].h);
+      this.c.beginPath();
+      this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
+      this.c.closePath();
+      this.c.fill();
     } else {
     this.currentLevel.balls[i].x = this.currentLevel.balls[i].nextx;
     this.currentLevel.balls[i].y = this.currentLevel.balls[i].nexty;
     this.c.fillStyle = "blue";
-    this.c.fillRect(this.currentLevel.balls[i].x,this.currentLevel.balls[i].y,this.currentLevel.balls[i].w,this.currentLevel.balls[i].h);
+    this.c.beginPath();
+    this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
+    this.c.closePath();
+    this.c.fill();
   }
   }
 };

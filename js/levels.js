@@ -131,13 +131,10 @@ Level.prototype.getCurrentLevelprops = function() {
     if(pushtype === 'Player') {
       newBrick.player = true;
       newBrick.life = 1;
-      newBrick.maxLife = 1;
     } else if (pushtype === 'Inert') {
       newBrick.life = 1;
-      newBrick.maxLife = 1;
     } else if (pushtype === 'Durable') {
       newBrick.life = 2;
-      newBrick.maxLife = 2;
     }
     this.bricks.push(newBrick);
   }
