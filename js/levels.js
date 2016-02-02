@@ -1,6 +1,7 @@
 // create level object to hold brick and ball objects
 var LevelConstruct = function(){
   return [
+<<<<<<< HEAD
     [ ['Player',200,550,250,65,15,'red',0],
     ['Inert',50,0,50,100,25,'black',10],
     ['Inert',150,0,50,100,25,'white',10],
@@ -30,6 +31,37 @@ var LevelConstruct = function(){
     ['Inert',450,0,125,100,25,'white',10],
     ['Inert',550,0,125,100,25,'black',10],
     ['Inert',650,0,125,100,25,'white',10] ],
+=======
+    [ ['Player',200,550,250,65,15,'black',0],
+    ['Inert',50,0,50,100,25,'lightblue',10],
+    ['Inert',150,0,50,100,25,'yellow',10],
+    ['Inert',250,0,50,100,25,'lightblue',10],
+    ['Inert',350,0,50,100,25,'yellow',10],
+    ['Inert',450,0,50,100,25,'lightblue',10],
+    ['Inert',550,0,50,100,25,'yellow',10],
+    ['Inert',650,0,50,100,25,'lightblue',10],
+    ['Inert',50,0,75,100,25,'yellow',10],
+    ['Inert',150,0,75,100,25,'lightblue',10],
+    ['Inert',250,0,75,100,25,'yellow',10],
+    ['Inert',350,0,75,100,25,'lightblue',10],
+    ['Inert',450,0,75,100,25,'yellow',10],
+    ['Inert',550,0,75,100,25,'lightblue',10],
+    ['Inert',650,0,75,100,25,'yellow',10],
+    ['Inert',50,0,100,100,25,'lightblue',10],
+    ['Inert',150,0,100,100,25,'yellow',10],
+    ['Inert',250,0,100,100,25,'lightblue',10],
+    ['Inert',350,0,100,100,25,'yellow',10],
+    ['Inert',450,0,100,100,25,'lightblue',10],
+    ['Inert',550,0,100,100,25,'yellow',10],
+    ['Inert',650,0,100,100,25,'lightblue',10],
+    ['Inert',50,0,125,100,25,'yellow',10],
+    ['Inert',150,0,125,100,25,'lightblue',10],
+    ['Inert',250,0,125,100,25,'yellow',10],
+    ['Inert',350,0,125,100,25,'lightblue',10],
+    ['Inert',450,0,125,100,25,'yellow',10],
+    ['Inert',550,0,125,100,25,'lightblue',10],
+    ['Speedy',650,0,125,100,25,'yellow',10] ],
+>>>>>>> feca62532763e5afcf66ba1d7ebcb4268234b53b
 
     [['Player',200,550,250,65,15,'red',0],
     ['Durable',50,0,100,100,25,'red',10],
@@ -106,8 +138,10 @@ var Level = function(currentLevel) {
   this.currentLevel = currentLevel;
   this.bricks = [];
   this.balls = [];
+  this.winCriteria = 0;
   this.getCurrentLevelprops();
   this.makeBall(394,538);
+
 }
 
 Level.prototype.makeBall = function(x,y){
@@ -131,10 +165,14 @@ Level.prototype.getCurrentLevelprops = function() {
     if(pushtype === 'Player') {
       newBrick.player = true;
       newBrick.life = 1;
-    } else if (pushtype === 'Inert') {
+      this.winCriteria++;
+    } else if (pushtype === 'Inert' || pushtype === "Speedy") {
       newBrick.life = 1;
     } else if (pushtype === 'Durable') {
       newBrick.life = 2;
+    } else if (pushtype === 'Steady') {
+      this.winCriteria++;
+      newBrick.life = 1;
     }
     this.bricks.push(newBrick);
   }
