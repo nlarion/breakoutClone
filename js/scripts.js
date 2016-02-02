@@ -29,7 +29,7 @@ Game.prototype.gameManager = function(){
     this.pointImage.src = "images/point.png"; // load all assets now so
     var t = this;
     this.$canvas.mousemove(function(e){
-      t.currentLevel.bricks[0].x = e.offsetX-((t.currentLevel.bricks[0].w)/2);
+      t.currentPlayer.x = e.offsetX-((t.currentLevel.bricks[0].w)/2);
       //console.log("x: "+e.offsetX+"y: "+e.offsetY);
       for (var i = 0; i < t.currentLevel.balls.length; i++) {
         if(!t.currentLevel.balls[i].launched){
