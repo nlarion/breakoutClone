@@ -3,7 +3,8 @@ const STATE_INIT = 10,
   STATE_RESET = 30,
   STATE_PLAYING = 40,
   STATE_GAMEOVER = 50,
-  STATE_WIN = 60;
+  STATE_WIN = 60,
+  STATE_LOADING_LEVEL = 70;
 
 var Game = function(){
   this.firstRun = true;
@@ -49,8 +50,30 @@ Game.prototype.gameManager = function(){
   case STATE_WIN:
     this.winnerScreen();
     break;
+  case STATE_LOADING_LEVEL:
+    this.loadingLevelScreen();
+    break;
   }
 };
+
+Game.prototype.loadingLevelScreen = function(){
+
+  this.c.fillStyle = '#000111';
+  this.c.fillRect(0, 0, canvas.width, canvas.height);
+  //Box
+  this.c.strokeStyle = '#000000';
+  this.c.font = " "+ canvas.width / 10 + "px serif";
+  this.c.fillStyle = "#fff";
+  this.c.fillText ("Well Done!",canvas.width / 4, canvas.height / 2);
+  this.c.font = " "+ canvas.width / 30 + "px serif";
+  this.c.fillText("Click to Advance to Next Level",canvas.width / 3.6, canvas.height / 1.5);
+  if (this.isTheMouseBeingPressed == true) {
+    this.isTheMouseBeingPressed = false;
+    levelConstructs.splice(0,1);
+    this.currentLevel = new Level(1);
+    this.appState = STATE_PLAYING;
+  }
+}
 
 Game.prototype.gameOverScreen = function(){
 
@@ -115,7 +138,6 @@ Game.prototype.initApp = function(){
   if(this.introCount<150){
     this.introCount++;
   }else{
-    console.log("test");
     this.c.strokeStyle = '#000000';
     this.c.font = " "+ canvas.width / 30 + "px serif";
     this.c.fillStyle = "white";
@@ -179,8 +201,7 @@ Game.prototype.collide = function(){
               this.appState = STATE_WIN;
             }else{
               this.isTheMouseBeingPressed = false;
-              levelConstructs.splice(0,1);
-              this.currentLevel = new Level(1);
+              this.appState = STATE_LOADING_LEVEL;
               //console.log(this.currentLevel);
               //console.log(levelConstructs);
             }
