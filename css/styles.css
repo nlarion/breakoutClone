@@ -9,3 +9,12 @@ h1 {
 /*canvas {
   width: 100%;
 }*/
+
+body {
+  background-image: url(../images/galaxy.jpg);
+}
+
+h1 {
+
+ color: lightgrey;
+}
