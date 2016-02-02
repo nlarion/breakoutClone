@@ -8,7 +8,7 @@ const STATE_INIT = 10,
 var Game = function(){
   this.firstRun = true;
   this.pointImage = new Image();
-  this.appState = STATE_INIT;
+  this.appState = STATE_LOADING;
   this.isTheMouseBeingPressed = false;
   this.introCount = 0;
   this.$canvas = $('canvas');
@@ -40,7 +40,7 @@ Game.prototype.gameManager = function(){
     this.$canvas.click(function() {
       t.isTheMouseBeingPressed = true;
     });
-    this.appState = STATE_PLAYING;
+    this.appState = STATE_INIT;
     break;
   case STATE_RESET:
     resetApp(); //doesn't exist yet
@@ -105,7 +105,6 @@ Game.prototype.clearCanvasAndDisplayDetails = function(){
 }
 
 Game.prototype.initApp = function(){
-  this.introCount++;
   fadeIn = this.introCount + 30;
   colorModifier = fadeIn.toString(16);
   this.c.fillStyle = '#0001' + colorModifier;
@@ -116,8 +115,18 @@ Game.prototype.initApp = function(){
   this.c.font = " "+ canvas.width / 10 + "px serif";
   this.c.fillStyle = "#" + this.introCount + "";
   this.c.fillText ("Breakout",canvas.width / 3, canvas.height / 2);
-  if (this.introCount == 150 || this.isTheMouseBeingPressed == true) {
-    this.appState = STATE_LOADING;
+  if(this.introCount<150){
+    this.introCount++;
+  }else{
+    console.log("test");
+    this.c.strokeStyle = '#000000';
+    this.c.font = " "+ canvas.width / 30 + "px serif";
+    this.c.fillStyle = "white";
+    this.c.fillText("Click to Start a New Game",canvas.width / 3, canvas.height / 1.5);
+  }
+  if (this.isTheMouseBeingPressed == true) {
+    this.isTheMouseBeingPressed = false;
+    this.appState = STATE_PLAYING;
   }
 }
 
@@ -161,7 +170,7 @@ Game.prototype.collide = function(){
             if(levelConstructs.length===1){
               this.appState = STATE_WIN;
             }else{
-
+              this.isTheMouseBeingPressed = false;
               levelConstructs.splice(0,1);
               this.currentLevel = new Level(1);
               //console.log(this.currentLevel);
