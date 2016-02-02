@@ -29,37 +29,34 @@ var levelConstructs = [
   ['Inert',450,0,125,100,25,'white',10],
   ['Inert',550,0,125,100,25,'black',10],
   ['Inert',650,0,125,100,25,'white',10] ],
-  [ ['Player',200,550,250,65,15,'red',0],
-  ['Inert',50,0,50,100,25,'black',10],
-  ['Inert',150,0,50,100,25,'white',10],
-  ['Inert',250,0,50,100,25,'black',10],
-  ['Inert',350,0,50,100,25,'white',10],
-  ['Inert',450,0,50,100,25,'black',10],
-  ['Inert',550,0,50,100,25,'white',10],
-  ['Inert',650,0,50,100,25,'black',10],
-  ['Inert',50,0,75,100,25,'white',10],
-  ['Inert',150,0,75,100,25,'black',10],
-  ['Inert',250,0,75,100,25,'white',10],
-  ['Inert',350,0,75,100,25,'black',10],
-  ['Inert',450,0,75,100,25,'white',10],
-  ['Inert',550,0,75,100,25,'black',10],
-  ['Inert',650,0,75,100,25,'white',10],
-  ['Inert',50,0,100,100,25,'black',10],
-  ['Inert',150,0,100,100,25,'white',10],
-  ['Inert',250,0,100,100,25,'black',10],
-  ['Inert',350,0,100,100,25,'white',10],
-  ['Inert',450,0,100,100,25,'black',10],
-  ['Inert',550,0,100,100,25,'white',10],
-  ['Inert',650,0,100,100,25,'black',10],
-  ['Inert',50,0,125,100,25,'white',10],
-  ['Inert',150,0,125,100,25,'black',10],
-  ['Inert',250,0,125,100,25,'white',10],
-  ['Inert',350,0,125,100,25,'black',10],
-  ['Inert',450,0,125,100,25,'white',10],
-  ['Inert',550,0,125,100,25,'black',10],
-  ['Inert',650,0,125,100,25,'white',10] ],
+
   [['Player',200,550,250,65,15,'red',0],
-  ['Inert',650,0,125,100,25,'white',10]] ];
+  ['Inert',50,0,100,100,25,'white',10],
+  ['Inert',200,0,75,100,25,'black',10],
+  ['Inert',200,0,100,100,25,'white',10],
+  ['Inert',200,0,125,100,25,'black',10],
+  ['Inert',350,0,50,100,25,'white',10],
+  ['Inert',350,0,75,100,25,'black',10],
+  ['Inert',350,0,100,100,25,'white',10],
+  ['Inert',350,0,125,100,25,'black',10],
+  ['Inert',350,0,150,100,25,'white',10],
+  ['Inert',500,0,75,100,25,'black',10],
+  ['Inert',500,0,100,100,25,'white',10],
+  ['Inert',500,0,125,100,25,'black',10],
+  ['Inert',650,0,100,100,25,'white',10],
+  ['Inert',0,0,350,100,25,'black',10],
+  ['Inert',100,0,350,100,25,'white',10],
+  ['Inert',200,0,350,100,25,'black',10],
+  ['Inert',500,0,350,100,25,'black',10],
+  ['Inert',600,0,350,100,25,'white',10],
+  ['Inert',700,0,350,100,25,'black',10],
+  ['Inert',50,0,325,100,25,'black',10],
+  ['Inert',150,0,325,100,25,'white',10],
+  ['Inert',250,0,325,100,25,'black',10],
+  ['Inert',450,0,325,100,25,'black',10],
+  ['Inert',550,0,325,100,25,'white',10],
+  ['Inert',650,0,325,100,25,'black',10],
+ ] ];
 
 function Level(currentLevel) {
   this.currentLevel = currentLevel;
@@ -70,7 +67,7 @@ function Level(currentLevel) {
 }
 
 Level.prototype.makeBall = function(x,y){
-  var ball = new Ball(x,y,12,12,6,-6,"white");
+  var ball = new Ball(x,y,12,12,1,-6,"white");
   ball.launched = false;
   this.balls.push(ball);
 };
