@@ -176,6 +176,8 @@ Game.prototype.drawBricks = function(){
   }
 };
 
+
+
 Game.prototype.collide = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     for (var j = 0; j < this.currentLevel.bricks.length; j++) {
