@@ -2,7 +2,7 @@
 function Level(currentLevel) {
   this.currentLevel = currentLevel;
   this.levelConstructs = [
-    [['Player',200,550,250,65,15,'red',0],
+    [['Player',368,550,250,65,15,'red',0],
     ['Inert',50,0,50,100,25,'black',10],
     ['Inert',150,0,50,100,25,'white',10],
     ['Inert',250,0,50,100,25,'black',10],
@@ -35,12 +35,12 @@ function Level(currentLevel) {
   this.bricks = [];
   this.balls = [];
   this.getCurrentLevelprops();
-  this.makeBall();
+  this.makeBall(394,538);
 }
 
-Level.prototype.makeBall = function(){
-  var ball = new Ball(200,250,12,12,6,6,"white");
-  ball.launched = true;
+Level.prototype.makeBall = function(x,y){
+  var ball = new Ball(x,y,12,12,6,-6,"white");
+  ball.launched = false;
   this.balls.push(ball);
 };
 
