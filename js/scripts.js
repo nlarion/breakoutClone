@@ -33,10 +33,12 @@ Game.prototype.gameManager = function(){
       //console.log("x: "+e.offsetX+"y: "+e.offsetY);
       for (var i = 0; i < t.currentLevel.balls.length; i++) {
         if(!t.currentLevel.balls[i].launched){
-          t.currentLevel.balls[i].x = e.offsetX;
-          t.currentLevel.balls[i].y = 240-t.currentLevel.balls[i].r;
+          t.currentLevel.balls[i].x = (e.offsetX-(t.currentLevel.balls[i].w)/2);
         }
       }
+    });
+    this.$canvas.click(function() {
+      t.isTheMouseBeingPressed = true;
     });
     this.appState = STATE_PLAYING;
     break;
@@ -78,7 +80,10 @@ Game.prototype.winnerScreen = function() {
 
 Game.prototype.gameLoop = function(){
   this.clearCanvasAndDisplayDetails();
-  this.updatePosition();
+  if(this.isTheMouseBeingPressed) {
+    this.updatePosition();
+    this.currentLevel.balls[0].launched = true;
+  }
   this.collide();
   this.testWalls();
   this.drawBricks();
@@ -185,11 +190,12 @@ Game.prototype.testWalls = function(){
     }
     if(this.currentLevel.balls[i].nexty+this.currentLevel.balls[i].h>canvas.height){
       // this.currentLevel.balls[i].vely *= -1;
+      this.isTheMouseBeingPressed = false;
       this.currentLevel.balls.splice(i,1);
       if(this.currentLevel.balls.length === 0 && this.currentPlayer.lives > 1){
         this.currentPlayer.lives--;
         console.log(this.currentPlayer.lives);
-        this.currentLevel.makeBall();
+        this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
       } else {
         this.appState = STATE_GAMEOVER;
       }
@@ -199,10 +205,17 @@ Game.prototype.testWalls = function(){
 
 Game.prototype.drawRenderBalls = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
+    if(!this.currentLevel.balls[i].launched) {
+      this.currentLevel.balls[i].nextx = this.currentLevel.balls[i].x;
+      this.currentLevel.balls[i].nexty = this.currentLevel.balls[i].y;
+      this.c.fillStyle = "blue";
+      this.c.fillRect(this.currentLevel.balls[i].x,this.currentLevel.balls[i].y,this.currentLevel.balls[i].w,this.currentLevel.balls[i].h);
+    } else {
     this.currentLevel.balls[i].x = this.currentLevel.balls[i].nextx;
     this.currentLevel.balls[i].y = this.currentLevel.balls[i].nexty;
     this.c.fillStyle = "blue";
     this.c.fillRect(this.currentLevel.balls[i].x,this.currentLevel.balls[i].y,this.currentLevel.balls[i].w,this.currentLevel.balls[i].h);
+  }
   }
 };
 

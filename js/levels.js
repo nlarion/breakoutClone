@@ -66,12 +66,12 @@ function Level(currentLevel) {
   this.bricks = [];
   this.balls = [];
   this.getCurrentLevelprops();
-  this.makeBall();
+  this.makeBall(394,538);
 }
 
-Level.prototype.makeBall = function(){
-  var ball = new Ball(200,250,12,12,6,6,"white");
-  ball.launched = true;
+Level.prototype.makeBall = function(x,y){
+  var ball = new Ball(x,y,12,12,6,-6,"white");
+  ball.launched = false;
   this.balls.push(ball);
 };
 
