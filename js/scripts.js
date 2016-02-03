@@ -243,7 +243,7 @@ Game.prototype.doCollide = function(i,j){
     }
     if(this.currentLevel.bricks[j].powerUp.length>0) {
       //powerup array being created
-      var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x,this.currentLevel.bricks[j].y,25,5,this.currentLevel.bricks[j].powerUp);
+      var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x+(this.currentLevel.bricks[j].w/3),this.currentLevel.bricks[j].y+(this.currentLevel.bricks[j].h/3),25,5,this.currentLevel.bricks[j].powerUp);
       this.currentLevel.powerUp.push(newPowerUp);
     }
     if(this.currentLevel.bricks[j].life === 0) {
