@@ -125,7 +125,6 @@ Game.prototype.gameLoop = function(){
     this.updatePowerUp();
     this.drawPowerUp();
   }
-
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
@@ -375,6 +374,20 @@ Game.prototype.drawPowerUp = function(j){
     this.c.fillRect(this.currentLevel.powerUp[i].x,this.currentLevel.powerUp[i].y,this.currentLevel.powerUp[i].w,this.currentLevel.powerUp[i].h);
   }
 
+=======
+    if(this.currentLevel.balls[i].velx > 15){
+      this.currentLevel.balls[i].velx = 15;
+    } else if(this.currentLevel.balls[i].velx < -15){
+      this.currentLevel.balls[i].velx = -15;
+    } else if(this.currentLevel.balls[i].vely > 15){
+      this.currentLevel.balls[i].vely = 15;
+    } else if(this.currentLevel.balls[i].vely < -15){
+      this.currentLevel.balls[i].vely = -15;
+    }
+    this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
+    this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
+  }
+>>>>>>> 41d404a28c505d10680d9170517854c2191e246e
 };
 
 Game.prototype.runTheGame = function(){
