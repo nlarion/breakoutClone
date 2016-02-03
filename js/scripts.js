@@ -223,14 +223,14 @@ Game.prototype.doCollide = function(i,j){
     if(this.currentLevel.bricks[j].type === "Speedy") {
 
       if(this.currentLevel.balls[i].velx<0) {
-        this.currentLevel.balls[i].velx -= 1.3;
+        this.currentLevel.balls[i].velx -= 3;
       } else {
-        this.currentLevel.balls[i].velx += 1.3;
+        this.currentLevel.balls[i].velx += 3;
       }
       if(this.currentLevel.balls[i].vely<0) {
-        this.currentLevel.balls[i].vely -= 1.3;
+        this.currentLevel.balls[i].vely -= 3;
       } else {
-        this.currentLevel.balls[i].vely += 1.3;
+        this.currentLevel.balls[i].vely += 3;
       }
     }
     if(this.currentLevel.bricks[j].life === 0) {
