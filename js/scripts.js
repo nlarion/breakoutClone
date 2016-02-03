@@ -218,6 +218,13 @@ Game.prototype.collide = function(){
       }
     }
   }
+  for(var k = 0; k < this.currentLevel.powerUp.length; k++){
+    var powerUpCollision = this.powerUpCollisions(k);
+    if(powerUpCollision) {
+      this.runPowerUpCollisions(k);
+      //run another function
+    }
+  }
 };
 
 Game.prototype.doCollide = function(i,j){
@@ -240,7 +247,7 @@ Game.prototype.doCollide = function(i,j){
     }
     if(this.currentLevel.bricks[j].powerUp.length>0) {
       //powerup array being created
-      var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x,this.currentLevel.bricks[j].y,25,5,"red",'newBall');
+      var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x,this.currentLevel.bricks[j].y,25,5,this.currentLevel.bricks[j].powerUp);
       this.currentLevel.powerUp.push(newPowerUp);
     }
     if(this.currentLevel.bricks[j].life === 0) {
@@ -261,6 +268,28 @@ Game.prototype.doCollide = function(i,j){
   }
 }
 
+Game.prototype.powerUpCollisions = function(k) {
+  var leftPlayer = this.currentLevel.bricks[0].x;
+  var rightPlayer = this.currentLevel.bricks[0].x + this.currentLevel.bricks[0].w;
+  var topPlayer = this.currentLevel.bricks[0].y;
+  var bottomPlayer = this.currentLevel.bricks[0].y + this.currentLevel.bricks[0].h;
+  var leftPowerUp = this.currentLevel.powerUp[k].x;
+  var rightPowerUp = this.currentLevel.powerUp[k].x + this.currentLevel.powerUp[k].w;
+  var topPowerUp = this.currentLevel.powerUp[k].y;
+  var bottomPowerUp = this.currentLevel.powerUp[k].y + this.currentLevel.powerUp[k].h;
+
+  if(bottomPlayer < topPowerUp) return(false);
+  if(topPlayer > bottomPowerUp) return(false);
+
+  if(rightPlayer < leftPowerUp) return(false);
+  if(leftPlayer > rightPowerUp) return(false);
+
+  return (true);
+}
+
+Game.prototype.runPowerUpCollisions = function(k) {
+  this.currentLevel.powerUp.splice(k,1);
+}
 
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {

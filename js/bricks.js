@@ -41,13 +41,15 @@ var Ball = function(x,y,w,h,velx,vely,color){
   this.launched = false;
 };
 
-var PowerUP = function(x,y,w,h,color,type){
+var PowerUP = function(x,y,w,h,type){
   this.x = x;
   this.y = y;
   this.w = w;
   this.h = h;
-  this.color = color;
+  if(type === 'newBall') {
+    this.color = 'green';
+  }
   this.type = type;
-  this.vely = 1;
+  this.vely = 3;
   this.nexty = this.y;
 };
