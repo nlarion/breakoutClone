@@ -52,6 +52,9 @@ var PowerUP = function(x,y,w,h,type){
   if(type === 'extraLife') {
     this.color = 'green';
   }
+  if(type === 'slowDown') {
+    this.color = 'brown';
+  }
   this.type = type;
   this.vely = 3;
   this.nexty = this.y;
