@@ -231,14 +231,14 @@ Game.prototype.doCollide = function(i,j){
     if(this.currentLevel.bricks[j].type === "Speedy") {
 
       if(this.currentLevel.balls[i].velx<0) {
-        this.currentLevel.balls[i].velx -= 1.15;
+        this.currentLevel.balls[i].velx -= 3;
       } else {
-        this.currentLevel.balls[i].velx += 1.15;
+        this.currentLevel.balls[i].velx += 3;
       }
       if(this.currentLevel.balls[i].vely<0) {
-        this.currentLevel.balls[i].vely -= 1.15;
+        this.currentLevel.balls[i].vely -= 3;
       } else {
-        this.currentLevel.balls[i].vely += 1.15;
+        this.currentLevel.balls[i].vely += 3;
       }
     }
     if(this.currentLevel.bricks[j].powerUp.length>0) {
@@ -373,21 +373,6 @@ Game.prototype.drawPowerUp = function(j){
     this.c.fillStyle = this.currentLevel.powerUp[i].color;
     this.c.fillRect(this.currentLevel.powerUp[i].x,this.currentLevel.powerUp[i].y,this.currentLevel.powerUp[i].w,this.currentLevel.powerUp[i].h);
   }
-
-=======
-    if(this.currentLevel.balls[i].velx > 15){
-      this.currentLevel.balls[i].velx = 15;
-    } else if(this.currentLevel.balls[i].velx < -15){
-      this.currentLevel.balls[i].velx = -15;
-    } else if(this.currentLevel.balls[i].vely > 15){
-      this.currentLevel.balls[i].vely = 15;
-    } else if(this.currentLevel.balls[i].vely < -15){
-      this.currentLevel.balls[i].vely = -15;
-    }
-    this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
-    this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
-  }
->>>>>>> 41d404a28c505d10680d9170517854c2191e246e
 };
 
 Game.prototype.runTheGame = function(){
