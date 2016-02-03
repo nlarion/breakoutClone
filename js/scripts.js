@@ -116,10 +116,7 @@ Game.prototype.winnerScreen = function() {
 
 Game.prototype.gameLoop = function(){
   this.clearCanvasAndDisplayDetails();
-  if(this.isTheMouseBeingPressed) {
-    this.updatePosition();
-    this.currentLevel.balls[0].launched = true;
-  }
+  this.updatePosition();
   this.collide();
   this.testWalls();
   this.drawBricks();
@@ -288,6 +285,9 @@ Game.prototype.powerUpCollisions = function(k) {
 }
 
 Game.prototype.runPowerUpCollisions = function(k) {
+  if(this.currentLevel.powerUp[k].type === 'newBall') {
+    this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
+  }
   this.currentLevel.powerUp.splice(k,1);
 }
 
@@ -309,7 +309,9 @@ Game.prototype.testWalls = function(){
       if(this.currentLevel.balls.length === 0 && this.currentPlayer.lives > 1){
         this.currentPlayer.lives--;
         this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
-      } else {
+      } else if (this.currentLevel.balls.length > 0) {
+        console.log('it works');
+      }else {
         this.appState = STATE_GAMEOVER;
       }
     }
@@ -341,17 +343,22 @@ Game.prototype.drawRenderBalls = function(){
 
 Game.prototype.updatePosition = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
-    if(this.currentLevel.balls[i].velx > 15){
-      this.currentLevel.balls[i].velx = 15;
-    } else if(this.currentLevel.balls[i].velx < -15){
-      this.currentLevel.balls[i].velx = -15;
-    } else if(this.currentLevel.balls[i].vely > 15){
-      this.currentLevel.balls[i].vely = 15;
-    } else if(this.currentLevel.balls[i].vely < -15){
-      this.currentLevel.balls[i].vely = -15;
+    if(this.isTheMouseBeingPressed) {
+      this.currentLevel.balls[i].launched = true;
     }
-    this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
-    this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
+    if(this.currentLevel.balls[i].launched === true) {
+      if(this.currentLevel.balls[i].velx > 15){
+        this.currentLevel.balls[i].velx = 15;
+      } else if(this.currentLevel.balls[i].velx < -15){
+        this.currentLevel.balls[i].velx = -15;
+      } else if(this.currentLevel.balls[i].vely > 15){
+        this.currentLevel.balls[i].vely = 15;
+      } else if(this.currentLevel.balls[i].vely < -15){
+        this.currentLevel.balls[i].vely = -15;
+      }
+      this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
+      this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
+    }
   }
 };
 
