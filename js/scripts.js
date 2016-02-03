@@ -116,14 +116,15 @@ Game.prototype.winnerScreen = function() {
 
 Game.prototype.gameLoop = function(){
   this.clearCanvasAndDisplayDetails();
-  if(this.isTheMouseBeingPressed) {
-    this.updatePosition();
-    this.currentLevel.balls[0].launched = true;
-  }
+  this.updatePosition();
   this.collide();
   this.testWalls();
   this.drawBricks();
   this.drawRenderBalls();
+  if(this.currentLevel.powerUp.length > 0){//something like this...
+    this.updatePowerUp();
+    this.drawPowerUp();
+  }
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
@@ -213,10 +214,17 @@ Game.prototype.collide = function(){
       }
     }
   }
+  for(var k = 0; k < this.currentLevel.powerUp.length; k++){
+    var powerUpCollision = this.powerUpCollisions(k);
+    if(powerUpCollision) {
+      this.runPowerUpCollisions(k);
+      //run another function
+    }
+  }
 };
 
 Game.prototype.doCollide = function(i,j){
-  console.log(this.currentLevel.winCriteria);
+  console.log(this.currentLevel.bricks[j]);
   if(this.currentLevel.bricks[j].type==="Durable" || this.currentLevel.bricks[j].type==="Inert" || this.currentLevel.bricks[j].type==="Speedy") {
     this.currentPlayer.score += this.currentLevel.bricks[j].score;
     this.currentLevel.bricks[j].life -= 1;
@@ -232,6 +240,11 @@ Game.prototype.doCollide = function(i,j){
       } else {
         this.currentLevel.balls[i].vely += 3;
       }
+    }
+    if(this.currentLevel.bricks[j].powerUp.length>0) {
+      //powerup array being created
+      var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x,this.currentLevel.bricks[j].y,25,5,this.currentLevel.bricks[j].powerUp);
+      this.currentLevel.powerUp.push(newPowerUp);
     }
     if(this.currentLevel.bricks[j].life === 0) {
       this.currentLevel.bricks.splice(j,1);
@@ -251,6 +264,31 @@ Game.prototype.doCollide = function(i,j){
   }
 }
 
+Game.prototype.powerUpCollisions = function(k) {
+  var leftPlayer = this.currentLevel.bricks[0].x;
+  var rightPlayer = this.currentLevel.bricks[0].x + this.currentLevel.bricks[0].w;
+  var topPlayer = this.currentLevel.bricks[0].y;
+  var bottomPlayer = this.currentLevel.bricks[0].y + this.currentLevel.bricks[0].h;
+  var leftPowerUp = this.currentLevel.powerUp[k].x;
+  var rightPowerUp = this.currentLevel.powerUp[k].x + this.currentLevel.powerUp[k].w;
+  var topPowerUp = this.currentLevel.powerUp[k].y;
+  var bottomPowerUp = this.currentLevel.powerUp[k].y + this.currentLevel.powerUp[k].h;
+
+  if(bottomPlayer < topPowerUp) return(false);
+  if(topPlayer > bottomPowerUp) return(false);
+
+  if(rightPlayer < leftPowerUp) return(false);
+  if(leftPlayer > rightPowerUp) return(false);
+
+  return (true);
+}
+
+Game.prototype.runPowerUpCollisions = function(k) {
+  if(this.currentLevel.powerUp[k].type === 'newBall') {
+    this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
+  }
+  this.currentLevel.powerUp.splice(k,1);
+}
 
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
@@ -270,7 +308,9 @@ Game.prototype.testWalls = function(){
       if(this.currentLevel.balls.length === 0 && this.currentPlayer.lives > 1){
         this.currentPlayer.lives--;
         this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
-      } else {
+      } else if (this.currentLevel.balls.length > 0) {
+        console.log('it works');
+      }else {
         this.appState = STATE_GAMEOVER;
       }
     }
@@ -296,23 +336,42 @@ Game.prototype.drawRenderBalls = function(){
     this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
     this.c.closePath();
     this.c.fill();
-  }
+    }
   }
 };
 
 Game.prototype.updatePosition = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
-    if(this.currentLevel.balls[i].velx > 15){
-      this.currentLevel.balls[i].velx = 15;
-    } else if(this.currentLevel.balls[i].velx < -15){
-      this.currentLevel.balls[i].velx = -15;
-    } else if(this.currentLevel.balls[i].vely > 15){
-      this.currentLevel.balls[i].vely = 15;
-    } else if(this.currentLevel.balls[i].vely < -15){
-      this.currentLevel.balls[i].vely = -15;
+    if(this.isTheMouseBeingPressed) {
+      this.currentLevel.balls[i].launched = true;
     }
-    this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
-    this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
+    if(this.currentLevel.balls[i].launched === true) {
+      if(this.currentLevel.balls[i].velx > 15){
+        this.currentLevel.balls[i].velx = 15;
+      } else if(this.currentLevel.balls[i].velx < -15){
+        this.currentLevel.balls[i].velx = -15;
+      } else if(this.currentLevel.balls[i].vely > 15){
+        this.currentLevel.balls[i].vely = 15;
+      } else if(this.currentLevel.balls[i].vely < -15){
+        this.currentLevel.balls[i].vely = -15;
+      }
+      this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
+      this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
+    }
+  }
+};
+
+Game.prototype.updatePowerUp = function() {
+  for(var i = 0; i < this.currentLevel.powerUp.length; i++){
+    this.currentLevel.powerUp[i].nexty += this.currentLevel.powerUp[i].vely;
+  }
+}
+
+Game.prototype.drawPowerUp = function(j){
+  for(var i = 0; i < this.currentLevel.powerUp.length; i++){
+    this.currentLevel.powerUp[i].y = this.currentLevel.powerUp[i].nexty;
+    this.c.fillStyle = this.currentLevel.powerUp[i].color;
+    this.c.fillRect(this.currentLevel.powerUp[i].x,this.currentLevel.powerUp[i].y,this.currentLevel.powerUp[i].w,this.currentLevel.powerUp[i].h);
   }
 };
 
