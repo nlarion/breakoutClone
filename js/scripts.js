@@ -221,6 +221,7 @@ Game.prototype.doCollide = function(i,j){
     this.currentPlayer.score += this.currentLevel.bricks[j].score;
     this.currentLevel.bricks[j].life -= 1;
     if(this.currentLevel.bricks[j].type === "Speedy") {
+
       if(this.currentLevel.balls[i].velx<0) {
         this.currentLevel.balls[i].velx -= 1.15;
       } else {
