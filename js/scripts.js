@@ -193,23 +193,18 @@ Game.prototype.collide = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     for (var j = 0; j < this.currentLevel.bricks.length; j++) {
       if ( ((this.currentLevel.balls[i].nexty + this.currentLevel.balls[i].h) > (this.currentLevel.bricks[j].y)) && ((this.currentLevel.balls[i].nexty) < (this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h)) && ((this.currentLevel.balls[i].nextx + this.currentLevel.balls[i].w) > this.currentLevel.bricks[j].x) && (this.currentLevel.balls[i].nextx < (this.currentLevel.bricks[j].x + this.currentLevel.bricks[j].w)) ) {
-        //left of ball
+        //left and right of ball
         if ( (this.currentLevel.balls[i].y + this.currentLevel.balls[i].h > this.currentLevel.bricks[j].y) &&
           (this.currentLevel.balls[i].y < this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h) &&
-          (this.currentLevel.balls[i].x + this.currentLevel.balls[i].w > this.currentLevel.bricks[j].x) &&
-          (this.currentLevel.balls[i].x > this.currentLevel.bricks[j].x )) {
-          this.currentLevel.balls[i].velx *= -(1 + .05);
-          this.currentLevel.balls[i].vely += .05;//+0.5 increases the ball speed every time it hits something.
-          //right of ball
-        }else if ( (this.currentLevel.balls[i].y + this.currentLevel.balls[i].h > this.currentLevel.bricks[j].y) &&
-          (this.currentLevel.balls[i].y < this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h) &&
-          (this.currentLevel.balls[i].x + this.currentLevel.balls[i].w < this.currentLevel.bricks[j].x) &&
-          (this.currentLevel.balls[i].x < this.currentLevel.bricks[j].x) ) {
+          ((this.currentLevel.balls[i].x + this.currentLevel.balls[i].w > this.currentLevel.bricks[j].x) &&
+          (this.currentLevel.balls[i].x > this.currentLevel.bricks[j].x ) || (this.currentLevel.balls[i].x + this.currentLevel.balls[i].w < this.currentLevel.bricks[j].x) &&
+          (this.currentLevel.balls[i].x < this.currentLevel.bricks[j].x)) ) {
           this.currentLevel.balls[i].velx *= -(1 + .05);
           this.currentLevel.balls[i].vely += .05;//+0.5 increases the ball speed every time it hits something.
         } else {
           if(j===0) {
             this.currentLevel.balls[i].velx += this.currentLevel.bricks[j].velx*0.3;
+
           }
           this.currentLevel.balls[i].vely *= -(1 + .05);
           this.currentLevel.balls[i].velx += .05;//+0.5 increases the ball speed every time it hits something.
@@ -226,8 +221,17 @@ Game.prototype.doCollide = function(i,j){
     this.currentPlayer.score += this.currentLevel.bricks[j].score;
     this.currentLevel.bricks[j].life -= 1;
     if(this.currentLevel.bricks[j].type === "Speedy") {
-      this.currentLevel.balls[i].velx += 4;
-      this.currentLevel.balls[i].vely += 4;
+
+      if(this.currentLevel.balls[i].velx<0) {
+        this.currentLevel.balls[i].velx -= 1.15;
+      } else {
+        this.currentLevel.balls[i].velx += 1.15;
+      }
+      if(this.currentLevel.balls[i].vely<0) {
+        this.currentLevel.balls[i].vely -= 1.15;
+      } else {
+        this.currentLevel.balls[i].vely += 1.15;
+      }
     }
     if(this.currentLevel.bricks[j].life === 0) {
       this.currentLevel.bricks.splice(j,1);
