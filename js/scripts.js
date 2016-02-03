@@ -125,6 +125,10 @@ Game.prototype.gameLoop = function(){
     this.updatePowerUp();
     this.drawPowerUp();
   }
+  if(this.currentLevel.projectiles.length > 0){
+    this.updateProjectile();
+    this.drawProjectiles();
+  }
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
@@ -177,9 +181,18 @@ Game.prototype.drawBricks = function(){
       if(this.currentLevel.bricks[i].paddleTime > 0) {
         this.currentLevel.bricks[i].w += (this.currentLevel.bricks[i].finalw - this.currentLevel.bricks[i].w)*.1;
         this.currentLevel.bricks[i].paddleTime--;
-        console.log(this.currentLevel.bricks[i].paddleTime);
       } else {
         this.currentLevel.bricks[i].w -= (this.currentLevel.bricks[i].w - 65)*.1;
+      }
+      if(this.currentLevel.bricks[i].machineGunTime > 0) {
+        console.log(this.currentLevel.bricks[i].machineGunTime);
+        if(this.currentLevel.bricks[i].machineGunTime%25 === 0) {
+          var newProjectile1 = new Projectile(this.currentLevel.bricks[i].x,(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
+          var newProjectile2 = new Projectile((this.currentLevel.bricks[i].x+this.currentLevel.bricks[i].w),(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
+          this.currentLevel.projectiles.push(newProjectile1);
+          this.currentLevel.projectiles.push(newProjectile2);
+        }
+        this.currentLevel.bricks[i].machineGunTime--;
       }
     }else {
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
@@ -321,6 +334,9 @@ Game.prototype.runPowerUpCollisions = function(k) {
     this.currentLevel.bricks[0].finalw = 120;
     this.currentLevel.bricks[0].paddleTime = 500;
   }
+  if(this.currentLevel.powerUp[k].type === 'machineGun') {
+    this.currentLevel.bricks[0].machineGunTime = 500;
+  }
   this.currentLevel.powerUp.splice(k,1);
 };
 
@@ -407,6 +423,20 @@ Game.prototype.drawPowerUp = function(j){
     this.currentLevel.powerUp[i].y = this.currentLevel.powerUp[i].nexty;
     this.c.fillStyle = this.currentLevel.powerUp[i].color;
     this.c.fillRect(this.currentLevel.powerUp[i].x,this.currentLevel.powerUp[i].y,this.currentLevel.powerUp[i].w,this.currentLevel.powerUp[i].h);
+  }
+};
+
+Game.prototype.updateProjectile = function(){
+  for(var i = 0; i < this.currentLevel.projectiles.length; i++){
+    this.currentLevel.projectiles[i].nexty += this.currentLevel.projectiles[i].vely;
+  }
+};
+
+Game.prototype.drawProjectiles = function(){
+  for(var i = 0; i < this.currentLevel.projectiles.length; i++){
+    this.currentLevel.projectiles[i].y = this.currentLevel.projectiles[i].nexty;
+    this.c.fillStyle = this.currentLevel.projectiles[i].color;
+    this.c.fillRect(this.currentLevel.projectiles[i].x,this.currentLevel.projectiles[i].y,this.currentLevel.projectiles[i].w,this.currentLevel.projectiles[i].h);
   }
 };
 
