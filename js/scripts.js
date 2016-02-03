@@ -287,13 +287,31 @@ Game.prototype.powerUpCollisions = function(k) {
 Game.prototype.runPowerUpCollisions = function(k) {
   if(this.currentLevel.powerUp[k].type === 'newBall') {
     this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
-    this.currentLevel.balls[this.currentLevel.balls.length-1].launched = false;
   }
   if(this.currentLevel.powerUp[k].type === 'extraLife') {
     this.currentPlayer.lives++;
   }
+  if(this.currentLevel.powerUp[k].type === 'slowDown') {
+    for(var i = 0; i < this.currentLevel.balls.length; i++){
+      console.log(this.currentLevel.balls[i].velx);
+      if(this.currentLevel.balls[i].velx > 4 || this.currentLevel.balls[i].velx < -4) {
+        if (this.currentLevel.balls[i].velx < 0){
+          this.currentLevel.balls[i].velx += 2;
+        } else {
+          this.currentLevel.balls[i].velx -= 2;
+        }
+      }
+      if(this.currentLevel.balls[i].vely > 4 || this.currentLevel.balls[i].vely < -4) {
+        if (this.currentLevel.balls[i].vely < 0){
+          this.currentLevel.balls[i].vely += 2;
+        } else {
+          this.currentLevel.balls[i].vely -= 2;
+        }
+      }
+    }
+  }
   this.currentLevel.powerUp.splice(k,1);
-}
+};
 
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
