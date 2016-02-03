@@ -243,6 +243,7 @@ Game.prototype.doCollide = function(i,j){
     }
     if(this.currentLevel.bricks[j].powerUp.length>0) {
       //powerup array being created
+      this.isTheMouseBeingPressed = false;
       var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x+(this.currentLevel.bricks[j].w/3),this.currentLevel.bricks[j].y+(this.currentLevel.bricks[j].h/3),25,5,this.currentLevel.bricks[j].powerUp);
       this.currentLevel.powerUp.push(newPowerUp);
     }
@@ -286,6 +287,7 @@ Game.prototype.powerUpCollisions = function(k) {
 Game.prototype.runPowerUpCollisions = function(k) {
   if(this.currentLevel.powerUp[k].type === 'newBall') {
     this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
+    this.currentLevel.balls[this.currentLevel.balls.length-1].launched = false;
   }
   if(this.currentLevel.powerUp[k].type === 'extraLife') {
     this.currentPlayer.lives++;
@@ -316,6 +318,7 @@ Game.prototype.testWalls = function(){
       }else {
         this.appState = STATE_GAMEOVER;
       }
+      break;
     }
   }
 };
