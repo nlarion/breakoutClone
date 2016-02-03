@@ -124,6 +124,11 @@ Game.prototype.gameLoop = function(){
   this.testWalls();
   this.drawBricks();
   this.drawRenderBalls();
+  if(this.currentLevel.powerUp.length > 0){//something like this...
+    this.updatePowerUp();
+    this.drawPowerUp();
+  }
+
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
@@ -216,7 +221,7 @@ Game.prototype.collide = function(){
 };
 
 Game.prototype.doCollide = function(i,j){
-  console.log(this.currentLevel.winCriteria);
+  console.log(this.currentLevel.bricks[j]);
   if(this.currentLevel.bricks[j].type==="Durable" || this.currentLevel.bricks[j].type==="Inert" || this.currentLevel.bricks[j].type==="Speedy") {
     this.currentPlayer.score += this.currentLevel.bricks[j].score;
     this.currentLevel.bricks[j].life -= 1;
@@ -232,6 +237,11 @@ Game.prototype.doCollide = function(i,j){
       } else {
         this.currentLevel.balls[i].vely += 1.15;
       }
+    }
+    if(this.currentLevel.bricks[j].powerUp.length>0) {
+      //powerup array being created
+      var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x,this.currentLevel.bricks[j].y,25,5,"red",'newBall');
+      this.currentLevel.powerUp.push(newPowerUp);
     }
     if(this.currentLevel.bricks[j].life === 0) {
       this.currentLevel.bricks.splice(j,1);
@@ -296,7 +306,7 @@ Game.prototype.drawRenderBalls = function(){
     this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
     this.c.closePath();
     this.c.fill();
-  }
+    }
   }
 };
 
@@ -314,6 +324,21 @@ Game.prototype.updatePosition = function(){
     this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
     this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
   }
+};
+
+Game.prototype.updatePowerUp = function() {
+  for(var i = 0; i < this.currentLevel.powerUp.length; i++){
+    this.currentLevel.powerUp[i].nexty += this.currentLevel.powerUp[i].vely;
+  }
+}
+
+Game.prototype.drawPowerUp = function(j){
+  for(var i = 0; i < this.currentLevel.powerUp.length; i++){
+    this.currentLevel.powerUp[i].y = this.currentLevel.powerUp[i].nexty;
+    this.c.fillStyle = this.currentLevel.powerUp[i].color;
+    this.c.fillRect(this.currentLevel.powerUp[i].x,this.currentLevel.powerUp[i].y,this.currentLevel.powerUp[i].w,this.currentLevel.powerUp[i].h);
+  }
+
 };
 
 Game.prototype.runTheGame = function(){

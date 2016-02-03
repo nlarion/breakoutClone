@@ -8,7 +8,7 @@ var easeOutBack = function (t, b, c, d, s) {
   return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
 };
 
-var Brick = function(type,x,y,finalY,w,h,color,score){
+var Brick = function(type,x,y,finalY,w,h,color,score,powerUp){
   this.x = x;
   this.y = y;
   this.finalY = finalY;
@@ -23,6 +23,7 @@ var Brick = function(type,x,y,finalY,w,h,color,score){
   this.type = type;
   this.timer = 0;
   this.score = score;
+  this.powerUp = powerUp;
 };
 
 //function Ball(x,y,r,velx,vely,color){
@@ -38,4 +39,15 @@ var Ball = function(x,y,w,h,velx,vely,color){
   this.nextx = x;
   this.nexty = y;
   this.launched = false;
+};
+
+var PowerUP = function(x,y,w,h,color,type){
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.color = color;
+  this.type = type;
+  this.vely = 1;
+  this.nexty = this.y;
 };
