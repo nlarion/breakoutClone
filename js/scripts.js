@@ -251,6 +251,10 @@ Game.prototype.doCollide = function(i,j){
   }
 }
 
+Game.prototype.ballFlash = function() {
+
+}
+
 
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
