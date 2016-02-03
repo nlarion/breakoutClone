@@ -174,6 +174,13 @@ Game.prototype.drawBricks = function(){
 
     if(this.currentLevel.bricks[i].player){
       this.currentLevel.bricks[i].velx = (this.currentPlayer.x-this.currentLevel.bricks[i].x)*.4;
+      if(this.currentLevel.bricks[i].paddleTime > 0) {
+        this.currentLevel.bricks[i].w += (this.currentLevel.bricks[i].finalw - this.currentLevel.bricks[i].w)*.1;
+        this.currentLevel.bricks[i].paddleTime--;
+        console.log(this.currentLevel.bricks[i].paddleTime);
+      } else {
+        this.currentLevel.bricks[i].w -= (this.currentLevel.bricks[i].w - 65)*.1;
+      }
     }else {
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
     }
@@ -309,6 +316,10 @@ Game.prototype.runPowerUpCollisions = function(k) {
         }
       }
     }
+  }
+  if(this.currentLevel.powerUp[k].type === 'paddleWidth') {
+    this.currentLevel.bricks[0].finalw = 120;
+    this.currentLevel.bricks[0].paddleTime = 500;
   }
   this.currentLevel.powerUp.splice(k,1);
 };
