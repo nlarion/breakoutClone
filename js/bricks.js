@@ -47,6 +47,9 @@ var PowerUP = function(x,y,w,h,type){
   this.w = w;
   this.h = h;
   if(type === 'newBall') {
+    this.color = 'blue';
+  }
+  if(type === 'extraLife') {
     this.color = 'green';
   }
   this.type = type;

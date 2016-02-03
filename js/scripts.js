@@ -287,6 +287,9 @@ Game.prototype.runPowerUpCollisions = function(k) {
   if(this.currentLevel.powerUp[k].type === 'newBall') {
     this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
   }
+  if(this.currentLevel.powerUp[k].type === 'extraLife') {
+    this.currentPlayer.lives++;
+  }
   this.currentLevel.powerUp.splice(k,1);
 }
 

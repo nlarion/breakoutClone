@@ -21,8 +21,8 @@ var LevelConstruct = function(){
     ['Inert',250,0,100,100,25,'black',10, ""],
     ['Inert',350,0,100,100,25,'white',10, ""],
     ['Inert',450,0,100,100,25,'black',10, ""],
-    ['Inert',550,0,100,100,25,'white',10, ""],
-    ['Inert',650,0,100,100,25,'black',10, ""], ],
+    ['Inert',550,0,100,100,25,'white',10, "newBall"],
+    ['Inert',650,0,100,100,25,'black',10, "extraLife"], ],
 
     [ ['Player',200,550,250,65,15,'red',0],
     ['Inert',50,0,50,100,25,'black',10, ""],
