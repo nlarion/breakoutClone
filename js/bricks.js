@@ -53,9 +53,13 @@ var PowerUP = function(x,y,w,h,type){
     this.color = 'green';
   }
   if(type === 'slowDown') {
-    this.color = 'brown';
+    this.color = '#ffbf00';
+  }
+  if(type === 'paddleWidth') {
+    this.color = 'red';
   }
   this.type = type;
+  this.velx = 0;
   this.vely = 3;
   this.nexty = this.y;
 };
