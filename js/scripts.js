@@ -174,10 +174,10 @@ Game.prototype.clearCanvasAndDisplayDetails = function(){
   this.c.fillRect(0,0,canvas.width,canvas.height);
   this.c.font = "12px serif";
   this.c.fillStyle = "white";
-  this.c.fillText ("FPS: "+fps.getFPS(), 20, 20);
+  this.c.fillText ("Level: "+this.level, 20, 20);
   this.c.fillText ("Score: " + this.currentPlayer.score, canvas.width-65, 20);
   this.c.fillText ("Lives: ", 20, canvas.height - 20);
-  this.c.fillText ("VelX: "+this.currentLevel.balls[0].velx+" VelY: "+ this.currentLevel.balls[0].vely, canvas.width-100,canvas.height -20);
+  // this.c.fillText ("VelX: "+this.currentLevel.balls[0].velx+" VelY: "+ this.currentLevel.balls[0].vely, canvas.width-100,canvas.height -20);
   for (var i = 0; i < this.currentPlayer.lives-1; i++) {
     this.c.fillStyle = "blue";
     this.c.beginPath();
