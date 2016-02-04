@@ -2,27 +2,27 @@
 var LevelConstruct = function(){
   return [
     [ ['Player',200,550,250,65,15,'red',0],
-    ['Inert',50,0,50,100,25,'black',10, ""],
-    ['Inert',150,0,50,100,25,'white',10, ""],
-    ['Inert',250,0,50,100,25,'black',10, ""],
-    ['Inert',350,0,50,100,25,'white',10, ""],
-    ['Inert',450,0,50,100,25,'black',10, ""],
-    ['Inert',550,0,50,100,25,'white',10, ""],
-    ['Inert',650,0,50,100,25,'black',10, ""],
-    ['Inert',50,0,75,100,25,'white',10, ""],
-    ['Inert',150,0,75,100,25,'black',10, ""],
-    ['Inert',250,0,75,100,25,'white',10, ""],
-    ['Inert',350,0,75,100,25,'black',10, ""],
-    ['Inert',450,0,75,100,25,'white',10, ""],
-    ['Inert',550,0,75,100,25,'black',10, ""],
-    ['Inert',650,0,75,100,25,'white',10, ""],
-    ['Inert',50,0,100,100,25,'black',10, ""],
-    ['Inert',150,0,100,100,25,'white',10, ""],
-    ['Inert',250,0,100,100,25,'black',10, ""],
-    ['Inert',350,0,100,100,25,'white',10, ""],
-    ['Inert',450,0,100,100,25,'black',10, ""],
-    ['Inert',550,0,100,100,25,'white',10, ""],
-    ['Inert',650,0,100,100,25,'black',10, ""], ],
+    ['Inert',50,0,50,100,25,'black',10, "extraLife"],
+    ['Inert',150,0,50,100,25,'white',10, "extraLife"],
+    ['Inert',250,0,50,100,25,'black',10, "extraLife"],
+    ['Inert',350,0,50,100,25,'white',10, "extraLife"],
+    ['Inert',450,0,50,100,25,'black',10, "extraLife"],
+    ['Inert',550,0,50,100,25,'white',10, "extraLife"],
+    ['Inert',650,0,50,100,25,'black',10, "extraLife"],
+    ['Inert',50,0,75,100,25,'white',10, "extraLife"],
+    ['Inert',150,0,75,100,25,'black',10, "extraLife"],
+    ['Inert',250,0,75,100,25,'white',10, "extraLife"],
+    ['Inert',350,0,75,100,25,'black',10, "extraLife"],
+    ['Inert',450,0,75,100,25,'white',10, "paddleWidth"],
+    ['Inert',550,0,75,100,25,'black',10, "paddleWidth"],
+    ['Inert',650,0,75,100,25,'white',10, "paddleWidth"],
+    ['Inert',50,0,100,100,25,'black',10, "paddleWidth"],
+    ['Inert',150,0,100,100,25,'white',10, "slowDown"],
+    ['Inert',250,0,100,100,25,'black',10, "slowDown"],
+    ['Inert',350,0,100,100,25,'white',10, "paddleWidth"],
+    ['Inert',450,0,100,100,25,'black',10, "machineGun"],
+    ['Inert',550,0,100,100,25,'white',10, "newBall"],
+    ['Inert',650,0,100,100,25,'black',10, "machineGun"], ],
 
    [['Player',200,550,250,65,15,'red',0],
    ['Durable',50,0,100,100,25,'red',10, ""],
@@ -184,6 +184,7 @@ var Level = function(currentLevel) {
   this.bricks = [];
   this.balls = [];
   this.powerUp = [];
+  this.projectiles = [];
   this.winCriteria = 0;
   this.getCurrentLevelprops();
   this.makeBall(394,538);

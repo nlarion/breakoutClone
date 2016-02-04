@@ -151,6 +151,10 @@ Game.prototype.gameLoop = function(){
     this.updatePowerUp();
     this.drawPowerUp();
   }
+  if(this.currentLevel.projectiles.length > 0){
+    this.updateProjectile();
+    this.drawProjectiles();
+  }
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
@@ -206,6 +210,22 @@ Game.prototype.drawBricks = function(){
 
     if(this.currentLevel.bricks[i].player){
       this.currentLevel.bricks[i].velx = (this.currentPlayer.x-this.currentLevel.bricks[i].x)*.4;
+      if(this.currentLevel.bricks[i].paddleTime > 0) {
+        this.currentLevel.bricks[i].w += (this.currentLevel.bricks[i].finalw - this.currentLevel.bricks[i].w)*.1;
+        this.currentLevel.bricks[i].paddleTime--;
+      } else {
+        this.currentLevel.bricks[i].w -= (this.currentLevel.bricks[i].w - 65)*.1;
+      }
+      if(this.currentLevel.bricks[i].machineGunTime > 0) {
+        console.log(this.currentLevel.bricks[i].machineGunTime);
+        if(this.currentLevel.bricks[i].machineGunTime%15 === 0) {
+          var newProjectile1 = new Projectile(this.currentLevel.bricks[i].x,(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
+          var newProjectile2 = new Projectile((this.currentLevel.bricks[i].x+this.currentLevel.bricks[i].w),(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
+          this.currentLevel.projectiles.push(newProjectile1);
+          this.currentLevel.projectiles.push(newProjectile2);
+        }
+        this.currentLevel.bricks[i].machineGunTime--;
+      }
     }else {
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
     }
@@ -253,6 +273,19 @@ Game.prototype.collide = function(){
       //run another function
     }
   }
+  for(var l = 0; l < this.currentLevel.projectiles.length; l++) {
+    for(var m = 0; m < this.currentLevel.bricks.length; m++) {
+      var projectileCollision = this.projectileCollision(l,m);
+      if(projectileCollision) {
+        this.currentLevel.bricks[m].life -= 0.2;
+        if(this.currentLevel.bricks[m].life < 0) {
+          this.currentLevel.bricks.splice(m,1);
+        }
+        this.currentLevel.projectiles.splice(l,1);
+        break;
+      }
+    }
+  }
 };
 
 Game.prototype.doCollide = function(i,j){
@@ -286,7 +319,8 @@ Game.prototype.doCollide = function(i,j){
     this.currentLevel.bricks[j].life -= 1;
     if(this.currentLevel.bricks[j].powerUp.length>0) {
       //powerup array being created
-      var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x,this.currentLevel.bricks[j].y,25,5,this.currentLevel.bricks[j].powerUp);
+      this.isTheMouseBeingPressed = false;
+      var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x+(this.currentLevel.bricks[j].w/3),this.currentLevel.bricks[j].y+(this.currentLevel.bricks[j].h/3),25,5,this.currentLevel.bricks[j].powerUp);
       this.currentLevel.powerUp.push(newPowerUp);
     }
     if(this.currentLevel.bricks[j].life === 0) {
@@ -334,8 +368,56 @@ Game.prototype.runPowerUpCollisions = function(k) {
   if(this.currentLevel.powerUp[k].type === 'newBall') {
     this.currentLevel.makeBall(this.currentLevel.bricks[0].x+32,538);
   }
+  if(this.currentLevel.powerUp[k].type === 'extraLife') {
+    this.currentPlayer.lives++;
+  }
+  if(this.currentLevel.powerUp[k].type === 'slowDown') {
+    for(var i = 0; i < this.currentLevel.balls.length; i++){
+      console.log(this.currentLevel.balls[i].velx);
+      if(this.currentLevel.balls[i].velx > 4 || this.currentLevel.balls[i].velx < -4) {
+        if (this.currentLevel.balls[i].velx < 0){
+          this.currentLevel.balls[i].velx += 2;
+        } else {
+          this.currentLevel.balls[i].velx -= 2;
+        }
+      }
+      if(this.currentLevel.balls[i].vely > 4 || this.currentLevel.balls[i].vely < -4) {
+        if (this.currentLevel.balls[i].vely < 0){
+          this.currentLevel.balls[i].vely += 2;
+        } else {
+          this.currentLevel.balls[i].vely -= 2;
+        }
+      }
+    }
+  }
+  if(this.currentLevel.powerUp[k].type === 'paddleWidth') {
+    this.currentLevel.bricks[0].finalw = 120;
+    this.currentLevel.bricks[0].paddleTime = 500;
+  }
+  if(this.currentLevel.powerUp[k].type === 'machineGun') {
+    this.currentLevel.bricks[0].machineGunTime = 500;
+  }
   this.currentLevel.powerUp.splice(k,1);
-}
+};
+
+Game.prototype.projectileCollision = function(l,m){
+  var leftProjectile = this.currentLevel.projectiles[l].x;
+  var rightProjectile = this.currentLevel.projectiles[l].x + this.currentLevel.projectiles[l].w;
+  var topProjectile = this.currentLevel.projectiles[l].y;
+  var bottomProjectile = this.currentLevel.projectiles[l].y + this.currentLevel.projectiles[l].h;
+  var leftBrick = this.currentLevel.bricks[m].x;
+  var rightBrick = this.currentLevel.bricks[m].x + this.currentLevel.bricks[m].w;
+  var topBrick = this.currentLevel.bricks[m].y;
+  var bottomBrick = this.currentLevel.bricks[m].y + this.currentLevel.bricks[m].h;
+
+  if(bottomProjectile < topBrick) return(false);
+  if(topProjectile > bottomBrick) return(false);
+
+  if(rightProjectile < leftBrick) return(false);
+  if(leftProjectile > rightBrick) return(false);
+
+  return (true);
+};
 
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
@@ -365,6 +447,7 @@ Game.prototype.testWalls = function(){
         this.audio.stop();
         this.appState = STATE_GAMEOVER;
       }
+      break;
     }
   }
 };
@@ -424,6 +507,20 @@ Game.prototype.drawPowerUp = function(j){
     this.currentLevel.powerUp[i].y = this.currentLevel.powerUp[i].nexty;
     this.c.fillStyle = this.currentLevel.powerUp[i].color;
     this.c.fillRect(this.currentLevel.powerUp[i].x,this.currentLevel.powerUp[i].y,this.currentLevel.powerUp[i].w,this.currentLevel.powerUp[i].h);
+  }
+};
+
+Game.prototype.updateProjectile = function(){
+  for(var i = 0; i < this.currentLevel.projectiles.length; i++){
+    this.currentLevel.projectiles[i].nexty += this.currentLevel.projectiles[i].vely;
+  }
+};
+
+Game.prototype.drawProjectiles = function(){
+  for(var i = 0; i < this.currentLevel.projectiles.length; i++){
+    this.currentLevel.projectiles[i].y = this.currentLevel.projectiles[i].nexty;
+    this.c.fillStyle = this.currentLevel.projectiles[i].color;
+    this.c.fillRect(this.currentLevel.projectiles[i].x,this.currentLevel.projectiles[i].y,this.currentLevel.projectiles[i].w,this.currentLevel.projectiles[i].h);
   }
 };
 

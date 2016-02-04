@@ -47,9 +47,35 @@ var PowerUP = function(x,y,w,h,type){
   this.w = w;
   this.h = h;
   if(type === 'newBall') {
+    this.color = 'blue';
+  }
+  if(type === 'extraLife') {
     this.color = 'green';
   }
+  if(type === 'slowDown') {
+    this.color = '#ffbf00';
+  }
+  if(type === 'paddleWidth') {
+    this.color = 'red';
+  }
+  if(type === 'machineGun') {
+    this.color = 'white';
+  }
   this.type = type;
+  this.velx = 0;
   this.vely = 3;
+  this.nextx = this.x;
   this.nexty = this.y;
 };
+
+var Projectile = function(x,y) {
+  this.x = x;
+  this.y = y;
+  this.w = 2;
+  this.h = 8;
+  this.color = 'white'
+  this.velx = 0;
+  this.vely = -20;
+  this.nextx = x;
+  this.nexty = y;
+}
