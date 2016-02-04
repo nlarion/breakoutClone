@@ -232,11 +232,14 @@ Game.prototype.drawBricks = function(){
       }
       if(this.currentLevel.bricks[i].machineGunTime > 0) {
         console.log(this.currentLevel.bricks[i].machineGunTime);
-        if(this.currentLevel.bricks[i].machineGunTime%15 === 0) {
+        if(this.currentLevel.bricks[i].machineGunTime%16 === 0) {
           var newProjectile1 = new Projectile(this.currentLevel.bricks[i].x,(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
-          var newProjectile2 = new Projectile((this.currentLevel.bricks[i].x+this.currentLevel.bricks[i].w),(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
           this.currentLevel.projectiles.push(newProjectile1);
+          this.currentLevel.bricks[i].playerFlashTimer = 2;
+        } else if(this.currentLevel.bricks[i].machineGunTime%8 === 0) {
+          var newProjectile2 = new Projectile((this.currentLevel.bricks[i].x+this.currentLevel.bricks[i].w),(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
           this.currentLevel.projectiles.push(newProjectile2);
+          this.currentLevel.bricks[i].playerFlashTimer = 2;
         }
         this.currentLevel.bricks[i].machineGunTime--;
       }
@@ -244,9 +247,13 @@ Game.prototype.drawBricks = function(){
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
     }
     this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx;
-    this.c.strokeStyle = this.currentLevel.bricks[i].color;
-    this.c.lineWidth = 2;
-    this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    if(this.currentLevel.bricks[i].playerFlashTimer > 0) {
+      this.playerFlash(i);
+    } else {
+      this.c.strokeStyle = this.currentLevel.bricks[i].color;
+      this.c.lineWidth = 2;
+      this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    }
     if(this.currentLevel.bricks[i].type==="Durable" && this.currentLevel.bricks[i].life>1){
       this.c.strokeStyle = "rgba(0,0,0,.5)";
       this.c.lineWidth = 2;
@@ -402,7 +409,7 @@ Game.prototype.runPowerUpCollisions = function(k) {
     this.currentLevel.bricks[0].paddleTime = 500;
   }
   if(this.currentLevel.powerUp[k].type === 'machineGun') {
-    this.currentLevel.bricks[0].machineGunTime = 500;
+    this.currentLevel.bricks[0].machineGunTime = 350;
   }
   this.currentLevel.powerUp.splice(k,1);
 };
@@ -443,6 +450,13 @@ Game.prototype.testWalls = function(){
   } else if(this.currentPlayer.x<=0) {
     this.currentPlayer.x = 0;
   }
+};
+
+Game.prototype.playerFlash = function (i){
+  this.c.strokeStyle = 'white';
+  this.c.lineWidth = 2;
+  this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+  this.currentLevel.bricks[i].playerFlashTimer--;
 };
 
 Game.prototype.ballFlash = function(i){
