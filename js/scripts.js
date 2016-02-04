@@ -229,7 +229,7 @@ Game.prototype.drawBricks = function(){
     }else {
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
     }
-    this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx;
+    this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx; //TODO:fix player brick from clipping walls
     this.c.fillStyle = this.currentLevel.bricks[i].color;
     this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     if(this.currentLevel.bricks[i].type==="Durable" && this.currentLevel.bricks[i].life>1){
@@ -465,6 +465,11 @@ Game.prototype.testWalls = function(){
       }
       break;
     }
+  }
+  if(this.currentPlayer.x+(this.currentLevel.bricks[0].w)>=canvas.width) {
+    this.currentPlayer.x = canvas.width-(this.currentLevel.bricks[0].w);
+  } else if(this.currentPlayer.x<=0) {
+    this.currentPlayer.x = 0;
   }
 };
 
