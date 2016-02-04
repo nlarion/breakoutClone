@@ -161,9 +161,11 @@ Game.prototype.gameLoop = function(){
     this.getKeyPress = undefined;
   }
   this.clearCanvasAndDisplayDetails();
-  this.collide();
-  this.updatePosition();
-  this.testWalls();
+  if(this.currentLevel.bricks[1].y === this.currentLevel.bricks[1].finalY) {
+    this.collide();
+    this.updatePosition();
+    this.testWalls();
+  }
   this.drawBricks();
   this.drawRenderBalls();
 
@@ -231,11 +233,14 @@ Game.prototype.drawBricks = function(){
         this.currentLevel.bricks[i].w -= (this.currentLevel.bricks[i].w - 65)*.1;
       }
       if(this.currentLevel.bricks[i].machineGunTime > 0) {
-        if(this.currentLevel.bricks[i].machineGunTime%15 === 0) {
+        if(this.currentLevel.bricks[i].machineGunTime%16 === 0) {
           var newProjectile1 = new Projectile(this.currentLevel.bricks[i].x,(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
-          var newProjectile2 = new Projectile((this.currentLevel.bricks[i].x+this.currentLevel.bricks[i].w),(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
           this.currentLevel.projectiles.push(newProjectile1);
+          this.currentLevel.bricks[i].playerFlashTimer = 2;
+        } else if(this.currentLevel.bricks[i].machineGunTime%8 === 0) {
+          var newProjectile2 = new Projectile((this.currentLevel.bricks[i].x+this.currentLevel.bricks[i].w),(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
           this.currentLevel.projectiles.push(newProjectile2);
+          this.currentLevel.bricks[i].playerFlashTimer = 2;
         }
         this.currentLevel.bricks[i].machineGunTime--;
       }
@@ -244,9 +249,21 @@ Game.prototype.drawBricks = function(){
     }
     this.currentLevel.bricks[i].y += this.currentLevel.bricks[i].vely;
     this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx;
-    this.c.strokeStyle = this.currentLevel.bricks[i].color;
-    this.c.lineWidth = 2;
-    this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    if(i===0) {
+      if(this.currentLevel.bricks[1].y === this.currentLevel.bricks[1].finalY) {
+        if(this.currentLevel.bricks[i].playerFlashTimer > 0) {
+          this.playerFlash(i);
+        } else {
+          this.c.strokeStyle = this.currentLevel.bricks[i].color;
+          this.c.lineWidth = 2;
+          this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+        }
+      }
+    } else {
+      this.c.strokeStyle = this.currentLevel.bricks[i].color;
+      this.c.lineWidth = 2;
+      this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    }
     if(this.currentLevel.bricks[i].type==="Durable" && this.currentLevel.bricks[i].life>1){
       this.c.strokeStyle = "rgba(0,0,0,.5)";
       this.c.lineWidth = 2;
@@ -405,7 +422,7 @@ Game.prototype.runPowerUpCollisions = function(k) {
     this.currentLevel.bricks[0].paddleTime = 500;
   }
   if(this.currentLevel.powerUp[k].type === 'machineGun') {
-    this.currentLevel.bricks[0].machineGunTime = 500;
+    this.currentLevel.bricks[0].machineGunTime = 350;
   }
   this.currentLevel.powerUp.splice(k,1);
 };
@@ -436,6 +453,13 @@ Game.prototype.testWalls = function(){
   }
 };
 
+Game.prototype.playerFlash = function (i){
+  this.c.strokeStyle = 'white';
+  this.c.lineWidth = 2;
+  this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+  this.currentLevel.bricks[i].playerFlashTimer--;
+};
+
 Game.prototype.ballFlash = function(i){
   //do animation here
   console.log('it works');
@@ -450,26 +474,28 @@ Game.prototype.ballFlash = function(i){
 }
 
 Game.prototype.drawRenderBalls = function(){
-  for (var i = 0; i < this.currentLevel.balls.length; i++) {
-    if(!this.currentLevel.balls[i].launched) {
-      this.currentLevel.balls[i].x = (this.currentLevel.bricks[0].x+((this.currentLevel.bricks[0].w/2)-(this.currentLevel.balls[i].w)/2));
-      this.c.fillStyle = "blue";
-      this.c.beginPath();
-      this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
-      this.c.closePath();
-      this.c.fill();
-    } else {
-    this.currentLevel.balls[i].x += this.currentLevel.balls[i].velx;
-    this.currentLevel.balls[i].y += this.currentLevel.balls[i].vely;
-    this.c.fillStyle = "blue";
-    this.c.beginPath();
-    this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
-    this.c.closePath();
-    this.c.fill();
-    console.log(this.currentLevel.balls[i].flashTimer);
-    if(this.currentLevel.balls[i].flashTimer > 0){
-      this.ballFlash(i);
-    }
+  if(this.currentLevel.bricks[1].y === this.currentLevel.bricks[1].finalY) {
+    for (var i = 0; i < this.currentLevel.balls.length; i++) {
+      if(!this.currentLevel.balls[i].launched) {
+        this.currentLevel.balls[i].x = (this.currentLevel.bricks[0].x+((this.currentLevel.bricks[0].w/2)-(this.currentLevel.balls[i].w)/2));
+        this.c.fillStyle = "blue";
+        this.c.beginPath();
+        this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
+        this.c.closePath();
+        this.c.fill();
+      } else {
+        this.currentLevel.balls[i].x += this.currentLevel.balls[i].velx;
+        this.currentLevel.balls[i].y += this.currentLevel.balls[i].vely;
+        this.c.fillStyle = "blue";
+        this.c.beginPath();
+        this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
+        this.c.closePath();
+        this.c.fill();
+        console.log(this.currentLevel.balls[i].flashTimer);
+        if(this.currentLevel.balls[i].flashTimer > 0){
+          this.ballFlash(i);
+        }
+      }
     }
   }
 };
