@@ -161,11 +161,12 @@ Game.prototype.gameLoop = function(){
     this.getKeyPress = undefined;
   }
   this.clearCanvasAndDisplayDetails();
-  this.updatePosition();
   this.collide();
+  this.updatePosition();
   this.testWalls();
   this.drawBricks();
   this.drawRenderBalls();
+
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
@@ -222,7 +223,6 @@ Game.prototype.initApp = function(){
 Game.prototype.drawBricks = function(){
   for (var i = 0; i < this.currentLevel.bricks.length; i++) {
     //this.currentLevel.bricks[i].player ? false : this.currentLevel.bricks[i].y +=(200-this.currentLevel.bricks[i].y)*.1; //simple easing.
-
     if(this.currentLevel.bricks[i].player){
       this.currentLevel.bricks[i].velx = (this.currentPlayer.x-this.currentLevel.bricks[i].x)*.4;
       if(this.currentLevel.bricks[i].paddleTime > 0) {
@@ -251,7 +251,6 @@ Game.prototype.drawBricks = function(){
       this.c.strokeStyle = "rgba(0,0,0,.5)";
       this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     }
-
     this.currentLevel.bricks[i].timer<50 ? this.currentLevel.bricks[i].timer++: false;
   }
 
@@ -271,6 +270,7 @@ Game.prototype.collide = function(){
           this.currentLevel.balls[i].vely += .05;//+0.5 increases the ball speed every time it hits something.
           //try and make the ball do something here.
         } else {
+          console.log("test");
           if(j===0) { // player brick
             this.currentLevel.balls[i].velx += this.currentLevel.bricks[j].velx*0.3;
           }
@@ -465,19 +465,19 @@ Game.prototype.projectileCollision = function(l,m){
 
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
-    if(this.currentLevel.balls[i].nextx<0){
+    if(this.currentLevel.balls[i].x<0){
       this.sounds.lightHit.play();
       this.currentLevel.balls[i].velx *= -1;
     }
-    if(this.currentLevel.balls[i].nextx+this.currentLevel.balls[i].w>canvas.width){
+    if(this.currentLevel.balls[i].x+this.currentLevel.balls[i].w>canvas.width){
       this.sounds.lightHit.play();
       this.currentLevel.balls[i].velx *= -1;
     }
-    if(this.currentLevel.balls[i].nexty<0){
+    if(this.currentLevel.balls[i].y<0){
       this.sounds.lightHit.play();
       this.currentLevel.balls[i].vely *= -1;
     }
-    if(this.currentLevel.balls[i].nexty+this.currentLevel.balls[i].h>canvas.height){
+    if(this.currentLevel.balls[i].y+this.currentLevel.balls[i].h>canvas.height){
       // this.currentLevel.balls[i].vely *= -1;
       this.isTheMouseBeingPressed = false;
       this.currentLevel.balls.splice(i,1);
@@ -528,8 +528,8 @@ Game.prototype.drawRenderBalls = function(){
       this.c.fill();
     } else {
     //TODO: REMOVE THIS WHEN DONE DELETING NEXTX/Y
-    // this.currentLevel.balls[i].x = this.currentLevel.balls[i].nextx;
-    // this.currentLevel.balls[i].y = this.currentLevel.balls[i].nexty;
+    this.currentLevel.balls[i].x += this.currentLevel.balls[i].velx;
+    this.currentLevel.balls[i].y += this.currentLevel.balls[i].vely;
     this.c.fillStyle = "blue";
     this.c.beginPath();
     this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
@@ -558,8 +558,7 @@ Game.prototype.updatePosition = function(){
       } else if(this.currentLevel.balls[i].vely < -15){
         this.currentLevel.balls[i].vely = -15;
       }
-      this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
-      this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
+
     }
   }
   if(this.currentLevel.powerUp.length > 0){
