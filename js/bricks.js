@@ -50,16 +50,16 @@ var PowerUP = function(x,y,w,h,type){
     this.color = 'blue';
   }
   if(type === 'extraLife') {
-    this.color = 'green';
+    this.color = '#ff00ff';
   }
   if(type === 'slowDown') {
-    this.color = '#ffbf00';
+    this.color = 'pink';
   }
   if(type === 'paddleWidth') {
     this.color = 'red';
   }
   if(type === 'machineGun') {
-    this.color = 'white';
+    this.color = '#009933';
   }
   this.type = type;
   this.velx = 0;
