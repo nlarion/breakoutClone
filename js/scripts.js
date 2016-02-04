@@ -112,13 +112,7 @@ Game.prototype.gameOverScreen = function(){
   this.c.font = " "+ canvas.width / 30 + "px serif";
   this.c.fillText("Click to Try Again...",canvas.width / 2.8, canvas.height / 1.5);
   if (this.isTheMouseBeingPressed == true) {
-    this.firstRun = true;
-    this.isTheMouseBeingPressed = false;
-    levelConstructs = new LevelConstruct();
-    this.level = 1;
-    this.currentLevel = new Level(1);
-    this.currentPlayer = new Player();
-    this.appState = STATE_INIT;
+    this.changeStateAndRestartGame();
   }
 }
 
@@ -137,7 +131,21 @@ Game.prototype.winnerScreen = function() {
   this.c.fillText ("You Won!",canvas.width / 4, canvas.height / 2);
   this.c.font = " "+ canvas.width / 30 + "px serif";
   this.c.fillText("Game by: Neil Larion, Matt Rosanio, Will Johnson, and Michael Smith", canvas.width / 40, canvas.height / 1.5);
+  if (this.isTheMouseBeingPressed == true) {
+    this.changeStateAndRestartGame();
+  }
 };
+
+Game.prototype.changeStateAndRestartGame = function(){
+  this.firstRun = true;
+  this.isTheMouseBeingPressed = false;
+  levelConstructs = new LevelConstruct();
+  this.level = 1;
+  this.currentLevel = new Level(1);
+  this.currentPlayer = new Player();
+  this.audio.stop();
+  this.appState = STATE_INIT;
+}
 
 Game.prototype.gameLoop = function(){
   if (this.firstRun) {
