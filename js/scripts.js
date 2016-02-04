@@ -174,10 +174,10 @@ Game.prototype.clearCanvasAndDisplayDetails = function(){
   this.c.fillRect(0,0,canvas.width,canvas.height);
   this.c.font = "12px serif";
   this.c.fillStyle = "white";
-  this.c.fillText ("FPS: "+fps.getFPS(), 20, 20);
+  this.c.fillText ("Level: "+this.level, 20, 20);
   this.c.fillText ("Score: " + this.currentPlayer.score, canvas.width-65, 20);
   this.c.fillText ("Lives: ", 20, canvas.height - 20);
-  this.c.fillText ("VelX: "+this.currentLevel.balls[0].velx+" VelY: "+ this.currentLevel.balls[0].vely, canvas.width-100,canvas.height -20);
+  // this.c.fillText ("VelX: "+this.currentLevel.balls[0].velx+" VelY: "+ this.currentLevel.balls[0].vely, canvas.width-100,canvas.height -20);
   for (var i = 0; i < this.currentPlayer.lives-1; i++) {
     this.c.fillStyle = "blue";
     this.c.beginPath();
@@ -186,7 +186,6 @@ Game.prototype.clearCanvasAndDisplayDetails = function(){
     this.c.fill();
     // this.c.fillRect((i*20)+60,canvas.height -30,10,10);
   }
-  this
 }
 
 Game.prototype.initApp = function(){
@@ -246,9 +245,11 @@ Game.prototype.drawBricks = function(){
     }
     this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx;
     this.c.strokeStyle = this.currentLevel.bricks[i].color;
+    this.c.lineWidth = 2;
     this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     if(this.currentLevel.bricks[i].type==="Durable" && this.currentLevel.bricks[i].life>1){
       this.c.strokeStyle = "rgba(0,0,0,.5)";
+      this.c.lineWidth = 2;
       this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     }
     this.currentLevel.bricks[i].timer<50 ? this.currentLevel.bricks[i].timer++: false;
