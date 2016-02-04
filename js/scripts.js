@@ -278,8 +278,24 @@ Game.prototype.collide = function(){
       var projectileCollision = this.projectileCollision(l,m);
       if(projectileCollision) {
         this.currentLevel.bricks[m].life -= 0.2;
-        if(this.currentLevel.bricks[m].life < 0) {
+        if(this.currentLevel.bricks[m].life <= 0) {
           this.currentLevel.bricks.splice(m,1);
+          if(this.currentLevel.bricks.length === this.currentLevel.winCriteria && this.currentPlayer.lives>0){
+            this.level++;
+            console.log(levelConstructs.length);
+            if(levelConstructs.length===1){
+              this.firstRun = true;
+              this.audio.stop();
+              this.appState = STATE_WIN;
+            }else{
+              this.isTheMouseBeingPressed = false;
+              this.firstRun = true;
+              this.audio.stop();
+              this.appState = STATE_LOADING_LEVEL;
+              //console.log(this.currentLevel);
+              //console.log(levelConstructs);
+            }
+          }
         }
         this.currentLevel.projectiles.splice(l,1);
         break;
@@ -323,7 +339,7 @@ Game.prototype.doCollide = function(i,j){
       var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x+(this.currentLevel.bricks[j].w/3),this.currentLevel.bricks[j].y+(this.currentLevel.bricks[j].h/3),25,5,this.currentLevel.bricks[j].powerUp);
       this.currentLevel.powerUp.push(newPowerUp);
     }
-    if(this.currentLevel.bricks[j].life === 0) {
+    if(this.currentLevel.bricks[j].life <= 0) {
       this.currentLevel.bricks.splice(j,1);
     }
     if(this.currentLevel.bricks.length === this.currentLevel.winCriteria && this.currentPlayer.lives>0){
