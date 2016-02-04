@@ -231,7 +231,6 @@ Game.prototype.drawBricks = function(){
         this.currentLevel.bricks[i].w -= (this.currentLevel.bricks[i].w - 65)*.1;
       }
       if(this.currentLevel.bricks[i].machineGunTime > 0) {
-        console.log(this.currentLevel.bricks[i].machineGunTime);
         if(this.currentLevel.bricks[i].machineGunTime%15 === 0) {
           var newProjectile1 = new Projectile(this.currentLevel.bricks[i].x,(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
           var newProjectile2 = new Projectile((this.currentLevel.bricks[i].x+this.currentLevel.bricks[i].w),(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
@@ -240,9 +239,10 @@ Game.prototype.drawBricks = function(){
         }
         this.currentLevel.bricks[i].machineGunTime--;
       }
-    }else {
+    } else {
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
     }
+    this.currentLevel.bricks[i].y += this.currentLevel.bricks[i].vely;
     this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx;
     this.c.strokeStyle = this.currentLevel.bricks[i].color;
     this.c.lineWidth = 2;
@@ -348,6 +348,10 @@ Game.prototype.doCollide = function(i,j){
   }
 }
 
+Game.prototype.screenShake = function(){
+
+}
+
 Game.prototype.handleLevelAdvance = function(){
   this.level++;
   if(levelConstructs.length===1){
@@ -363,7 +367,6 @@ Game.prototype.handleLevelAdvance = function(){
 }
 
 Game.prototype.checkCollision = function(thing1,thing2) {
-
   if((((thing1.y+thing1.vely) + thing1.h) > (thing2.y)) && ((thing1.y+thing1.vely) < (thing2.y + thing2.h)) && (((thing1.x+thing1.velx) + thing1.w) > thing2.x) && ((thing1.x+thing1.velx) < (thing2.x + thing2.w))){
     return true;
   } else {
@@ -409,18 +412,6 @@ Game.prototype.runPowerUpCollisions = function(k) {
 
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
-    if(this.currentLevel.balls[i].x<0){
-      this.sounds.lightHit.play();
-      this.currentLevel.balls[i].velx *= -1;
-    }
-    if(this.currentLevel.balls[i].x+this.currentLevel.balls[i].w>canvas.width){
-      this.sounds.lightHit.play();
-      this.currentLevel.balls[i].velx *= -1;
-    }
-    if(this.currentLevel.balls[i].y<0){
-      this.sounds.lightHit.play();
-      this.currentLevel.balls[i].vely *= -1;
-    }
     if(this.currentLevel.balls[i].y+this.currentLevel.balls[i].h>canvas.height){
       // this.currentLevel.balls[i].vely *= -1;
       this.isTheMouseBeingPressed = false;
@@ -462,16 +453,12 @@ Game.prototype.drawRenderBalls = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     if(!this.currentLevel.balls[i].launched) {
       this.currentLevel.balls[i].x = (this.currentLevel.bricks[0].x+((this.currentLevel.bricks[0].w/2)-(this.currentLevel.balls[i].w)/2));
-      //TODO: REMOVE THIS WHEN DONE DELETING NEXTX/Y
-      // this.currentLevel.balls[i].nextx = this.currentLevel.balls[i].x;
-      // this.currentLevel.balls[i].nexty = this.currentLevel.balls[i].y;
       this.c.fillStyle = "blue";
       this.c.beginPath();
       this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
       this.c.closePath();
       this.c.fill();
     } else {
-    //TODO: REMOVE THIS WHEN DONE DELETING NEXTX/Y
     this.currentLevel.balls[i].x += this.currentLevel.balls[i].velx;
     this.currentLevel.balls[i].y += this.currentLevel.balls[i].vely;
     this.c.fillStyle = "blue";
