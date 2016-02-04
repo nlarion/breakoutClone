@@ -18,6 +18,7 @@ var Game = function(){
   this.level = 1;
   this.currentLevel = new Level(1);
   this.currentPlayer = new Player();
+  this.getKeyPress;
 
 }
 
@@ -35,7 +36,6 @@ Game.prototype.gameManager = function(){
     this.audio.addUri('sounds/breakoutLoop4.mp3',2700,"loop4");
     this.audio.addUri('sounds/breakoutLoop5.mp3',7990,"loop5");
     this.sounds = {gameOver: new Audio('sounds/breakoutGameOver.mp3'), normalHit: new Audio('sounds/SG280_BD_11.mp3'), lightHit: new Audio('sounds/SG280_Bongo_08.mp3'), powerUp: new Audio('sounds/SG280_Cym_01.mp3'), steady: new Audio('sounds/SG280_Tom_02.mp3'), mediumHit: new Audio('sounds/SG280_SD_02.mp3')};
-
     // this.audio = new Audio('sounds/breakoutLoop1.mp3');
     this.pointImage.src = "images/point.png"; // load all assets now so
     var t = this;
@@ -45,6 +45,9 @@ Game.prototype.gameManager = function(){
     });
     this.$canvas.click(function() {
       t.isTheMouseBeingPressed = true;
+    });
+    $(window).keypress(function(e){
+      t.getKeyPress = e;
     });
     this.appState = STATE_INIT;
     break;
@@ -141,6 +144,16 @@ Game.prototype.gameLoop = function(){
     this.audio.start("loop1");
     this.firstRun = false;
   }
+  if(this.getKeyPress){
+    console.log(this.getKeyPress.which);
+    if(this.getKeyPress.which === 108){
+      this.currentPlayer.lives++;
+    }else if(this.getKeyPress.which === 110){
+      this.handleLevelAdvance();
+    }
+    this.getKeyPress = undefined;
+  }
+
   this.clearCanvasAndDisplayDetails();
   this.updatePosition();
   this.collide();
@@ -168,7 +181,11 @@ Game.prototype.clearCanvasAndDisplayDetails = function(){
   this.c.fillText ("VelX: "+this.currentLevel.balls[0].velx+" VelY: "+ this.currentLevel.balls[0].vely, canvas.width-100,canvas.height -20);
   for (var i = 0; i < this.currentPlayer.lives-1; i++) {
     this.c.fillStyle = "blue";
-    this.c.fillRect((i*20)+60,canvas.height -30,10,10);
+    this.c.beginPath();
+    this.c.arc((i*20)+60,canvas.height-25,this.currentLevel.balls[0].w/2,0,Math.PI*2,true);
+    this.c.closePath();
+    this.c.fill();
+    // this.c.fillRect((i*20)+60,canvas.height -30,10,10);
   }
   this
 }
@@ -281,20 +298,7 @@ Game.prototype.collide = function(){
         if(this.currentLevel.bricks[m].life <= 0) {
           this.currentLevel.bricks.splice(m,1);
           if(this.currentLevel.bricks.length === this.currentLevel.winCriteria && this.currentPlayer.lives>0){
-            this.level++;
-            console.log(levelConstructs.length);
-            if(levelConstructs.length===1){
-              this.firstRun = true;
-              this.audio.stop();
-              this.appState = STATE_WIN;
-            }else{
-              this.isTheMouseBeingPressed = false;
-              this.firstRun = true;
-              this.audio.stop();
-              this.appState = STATE_LOADING_LEVEL;
-              //console.log(this.currentLevel);
-              //console.log(levelConstructs);
-            }
+            this.handleLevelAdvance();
           }
         }
         this.currentLevel.projectiles.splice(l,1);
@@ -343,21 +347,22 @@ Game.prototype.doCollide = function(i,j){
       this.currentLevel.bricks.splice(j,1);
     }
     if(this.currentLevel.bricks.length === this.currentLevel.winCriteria && this.currentPlayer.lives>0){
-      this.level++;
-      console.log(levelConstructs.length);
-      if(levelConstructs.length===1){
-        this.firstRun = true;
-        this.audio.stop();
-        this.appState = STATE_WIN;
-      }else{
-        this.isTheMouseBeingPressed = false;
-        this.firstRun = true;
-        this.audio.stop();
-        this.appState = STATE_LOADING_LEVEL;
-        //console.log(this.currentLevel);
-        //console.log(levelConstructs);
-      }
+      this.handleLevelAdvance();
     }
+  }
+}
+
+Game.prototype.handleLevelAdvance = function(){
+  this.level++;
+  if(levelConstructs.length===1){
+    this.firstRun = true;
+    this.audio.stop();
+    this.appState = STATE_WIN;
+  }else{
+    this.isTheMouseBeingPressed = false;
+    this.firstRun = true;
+    this.audio.stop();
+    this.appState = STATE_LOADING_LEVEL;
   }
 }
 
@@ -465,6 +470,11 @@ Game.prototype.testWalls = function(){
       }
       break;
     }
+  }
+  if(this.currentPlayer.x+(this.currentLevel.bricks[0].w)>=canvas.width) {
+    this.currentPlayer.x = canvas.width-(this.currentLevel.bricks[0].w);
+  } else if(this.currentPlayer.x<=0) {
+    this.currentPlayer.x = 0;
   }
 };
 
