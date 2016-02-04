@@ -186,7 +186,7 @@ Game.prototype.drawBricks = function(){
       }
       if(this.currentLevel.bricks[i].machineGunTime > 0) {
         console.log(this.currentLevel.bricks[i].machineGunTime);
-        if(this.currentLevel.bricks[i].machineGunTime%25 === 0) {
+        if(this.currentLevel.bricks[i].machineGunTime%15 === 0) {
           var newProjectile1 = new Projectile(this.currentLevel.bricks[i].x,(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
           var newProjectile2 = new Projectile((this.currentLevel.bricks[i].x+this.currentLevel.bricks[i].w),(this.currentLevel.bricks[i].y-this.currentLevel.bricks[i].h));
           this.currentLevel.projectiles.push(newProjectile1);
@@ -239,6 +239,19 @@ Game.prototype.collide = function(){
     if(powerUpCollision) {
       this.runPowerUpCollisions(k);
       //run another function
+    }
+  }
+  for(var l = 0; l < this.currentLevel.projectiles.length; l++) {
+    for(var m = 0; m < this.currentLevel.bricks.length; m++) {
+      var projectileCollision = this.projectileCollision(l,m);
+      if(projectileCollision) {
+        this.currentLevel.bricks[m].life -= 0.2;
+        if(this.currentLevel.bricks[m].life < 0) {
+          this.currentLevel.bricks.splice(m,1);
+        }
+        this.currentLevel.projectiles.splice(l,1);
+        break;
+      }
     }
   }
 };
@@ -338,6 +351,25 @@ Game.prototype.runPowerUpCollisions = function(k) {
     this.currentLevel.bricks[0].machineGunTime = 500;
   }
   this.currentLevel.powerUp.splice(k,1);
+};
+
+Game.prototype.projectileCollision = function(l,m){
+  var leftProjectile = this.currentLevel.projectiles[l].x;
+  var rightProjectile = this.currentLevel.projectiles[l].x + this.currentLevel.projectiles[l].w;
+  var topProjectile = this.currentLevel.projectiles[l].y;
+  var bottomProjectile = this.currentLevel.projectiles[l].y + this.currentLevel.projectiles[l].h;
+  var leftBrick = this.currentLevel.bricks[m].x;
+  var rightBrick = this.currentLevel.bricks[m].x + this.currentLevel.bricks[m].w;
+  var topBrick = this.currentLevel.bricks[m].y;
+  var bottomBrick = this.currentLevel.bricks[m].y + this.currentLevel.bricks[m].h;
+
+  if(bottomProjectile < topBrick) return(false);
+  if(topProjectile > bottomBrick) return(false);
+
+  if(rightProjectile < leftBrick) return(false);
+  if(leftProjectile > rightBrick) return(false);
+
+  return (true);
 };
 
 Game.prototype.testWalls = function(){
