@@ -112,13 +112,7 @@ Game.prototype.gameOverScreen = function(){
   this.c.font = " "+ canvas.width / 30 + "px serif";
   this.c.fillText("Click to Try Again...",canvas.width / 2.8, canvas.height / 1.5);
   if (this.isTheMouseBeingPressed == true) {
-    this.firstRun = true;
-    this.isTheMouseBeingPressed = false;
-    levelConstructs = new LevelConstruct();
-    this.level = 1;
-    this.currentLevel = new Level(1);
-    this.currentPlayer = new Player();
-    this.appState = STATE_INIT;
+    this.changeStateAndRestartGame();
   }
 }
 
@@ -137,7 +131,21 @@ Game.prototype.winnerScreen = function() {
   this.c.fillText ("You Won!",canvas.width / 4, canvas.height / 2);
   this.c.font = " "+ canvas.width / 30 + "px serif";
   this.c.fillText("Game by: Neil Larion, Matt Rosanio, Will Johnson, and Michael Smith", canvas.width / 40, canvas.height / 1.5);
+  if (this.isTheMouseBeingPressed == true) {
+    this.changeStateAndRestartGame();
+  }
 };
+
+Game.prototype.changeStateAndRestartGame = function(){
+  this.firstRun = true;
+  this.isTheMouseBeingPressed = false;
+  levelConstructs = new LevelConstruct();
+  this.level = 1;
+  this.currentLevel = new Level(1);
+  this.currentPlayer = new Player();
+  this.audio.stop();
+  this.appState = STATE_INIT;
+}
 
 Game.prototype.gameLoop = function(){
   if (this.firstRun) {
@@ -145,7 +153,6 @@ Game.prototype.gameLoop = function(){
     this.firstRun = false;
   }
   if(this.getKeyPress){
-    console.log(this.getKeyPress.which);
     if(this.getKeyPress.which === 108){
       this.currentPlayer.lives++;
     }else if(this.getKeyPress.which === 110){
@@ -153,28 +160,20 @@ Game.prototype.gameLoop = function(){
     }
     this.getKeyPress = undefined;
   }
-
   this.clearCanvasAndDisplayDetails();
-  this.updatePosition();
   this.collide();
+  this.updatePosition();
   this.testWalls();
   this.drawBricks();
   this.drawRenderBalls();
-  if(this.currentLevel.powerUp.length > 0){//something like this...
-    this.updatePowerUp();
-    this.drawPowerUp();
-  }
-  if(this.currentLevel.projectiles.length > 0){
-    this.updateProjectile();
-    this.drawProjectiles();
-  }
+
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
   this.c.fillStyle = "black";
   this.c.fillRect(0,0,canvas.width,canvas.height);
   this.c.font = "12px serif";
-  this.c.fillStyle = "#000000";
+  this.c.fillStyle = "white";
   this.c.fillText ("FPS: "+fps.getFPS(), 20, 20);
   this.c.fillText ("Score: " + this.currentPlayer.score, canvas.width-65, 20);
   this.c.fillText ("Lives: ", 20, canvas.height - 20);
@@ -224,7 +223,6 @@ Game.prototype.initApp = function(){
 Game.prototype.drawBricks = function(){
   for (var i = 0; i < this.currentLevel.bricks.length; i++) {
     //this.currentLevel.bricks[i].player ? false : this.currentLevel.bricks[i].y +=(200-this.currentLevel.bricks[i].y)*.1; //simple easing.
-
     if(this.currentLevel.bricks[i].player){
       this.currentLevel.bricks[i].velx = (this.currentPlayer.x-this.currentLevel.bricks[i].x)*.4;
       if(this.currentLevel.bricks[i].paddleTime > 0) {
@@ -253,7 +251,6 @@ Game.prototype.drawBricks = function(){
       this.c.strokeStyle = "rgba(0,0,0,.5)";
       this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     }
-
     this.currentLevel.bricks[i].timer<50 ? this.currentLevel.bricks[i].timer++: false;
   }
 
@@ -262,8 +259,7 @@ Game.prototype.drawBricks = function(){
 Game.prototype.collide = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     for (var j = 0; j < this.currentLevel.bricks.length; j++) {
-      if ( ((this.currentLevel.balls[i].nexty + this.currentLevel.balls[i].h) > (this.currentLevel.bricks[j].y)) && ((this.currentLevel.balls[i].nexty) < (this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h)) && ((this.currentLevel.balls[i].nextx + this.currentLevel.balls[i].w) > this.currentLevel.bricks[j].x) && (this.currentLevel.balls[i].nextx < (this.currentLevel.bricks[j].x + this.currentLevel.bricks[j].w)) ) {
-        //left and right of ball
+      if ( this.checkCollision(this.currentLevel.balls[i],this.currentLevel.bricks[j]) ) { //left and right of ball
         if ( (this.currentLevel.balls[i].y + this.currentLevel.balls[i].h > this.currentLevel.bricks[j].y) &&
           (this.currentLevel.balls[i].y < this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h) &&
           ((this.currentLevel.balls[i].x + this.currentLevel.balls[i].w > this.currentLevel.bricks[j].x) &&
@@ -271,10 +267,11 @@ Game.prototype.collide = function(){
           (this.currentLevel.balls[i].x < this.currentLevel.bricks[j].x)) ) {
           this.currentLevel.balls[i].velx *= -(1 + .05);
           this.currentLevel.balls[i].vely += .05;//+0.5 increases the ball speed every time it hits something.
+          //try and make the ball do something here.
         } else {
-          if(j===0) {
+          console.log("test");
+          if(j===0) { // player brick
             this.currentLevel.balls[i].velx += this.currentLevel.bricks[j].velx*0.3;
-
           }
           this.currentLevel.balls[i].vely *= -(1 + .05);
           this.currentLevel.balls[i].velx += .05;//+0.5 increases the ball speed every time it hits something.
@@ -284,16 +281,13 @@ Game.prototype.collide = function(){
     }
   }
   for(var k = 0; k < this.currentLevel.powerUp.length; k++){
-    var powerUpCollision = this.powerUpCollisions(k);
-    if(powerUpCollision) {
+    if(this.checkCollision(this.currentLevel.powerUp[k],this.currentLevel.bricks[0])){
       this.runPowerUpCollisions(k);
-      //run another function
     }
   }
   for(var l = 0; l < this.currentLevel.projectiles.length; l++) {
     for(var m = 0; m < this.currentLevel.bricks.length; m++) {
-      var projectileCollision = this.projectileCollision(l,m);
-      if(projectileCollision) {
+      if(this.checkCollision(this.currentLevel.projectiles[l],this.currentLevel.bricks[m])) {
         this.currentLevel.bricks[m].life -= 0.2;
         if(this.currentLevel.bricks[m].life <= 0) {
           this.currentLevel.bricks.splice(m,1);
@@ -310,6 +304,7 @@ Game.prototype.collide = function(){
 
 Game.prototype.doCollide = function(i,j){
   var decreaseLifeFlag = false;
+  this.currentLevel.balls[i].flashTimer = 9;
   if(this.currentLevel.bricks[j].type==="Player"){
     this.sounds.normalHit.play();
   }else if(this.currentLevel.bricks[j].type==="Inert"){
@@ -366,23 +361,13 @@ Game.prototype.handleLevelAdvance = function(){
   }
 }
 
-Game.prototype.powerUpCollisions = function(k) {
-  var leftPlayer = this.currentLevel.bricks[0].x;
-  var rightPlayer = this.currentLevel.bricks[0].x + this.currentLevel.bricks[0].w;
-  var topPlayer = this.currentLevel.bricks[0].y;
-  var bottomPlayer = this.currentLevel.bricks[0].y + this.currentLevel.bricks[0].h;
-  var leftPowerUp = this.currentLevel.powerUp[k].x;
-  var rightPowerUp = this.currentLevel.powerUp[k].x + this.currentLevel.powerUp[k].w;
-  var topPowerUp = this.currentLevel.powerUp[k].y;
-  var bottomPowerUp = this.currentLevel.powerUp[k].y + this.currentLevel.powerUp[k].h;
+Game.prototype.checkCollision = function(thing1,thing2) {
 
-  if(bottomPlayer < topPowerUp) return(false);
-  if(topPlayer > bottomPowerUp) return(false);
-
-  if(rightPlayer < leftPowerUp) return(false);
-  if(leftPlayer > rightPowerUp) return(false);
-
-  return (true);
+  if((((thing1.y+thing1.vely) + thing1.h) > (thing2.y)) && ((thing1.y+thing1.vely) < (thing2.y + thing2.h)) && (((thing1.x+thing1.velx) + thing1.w) > thing2.x) && ((thing1.x+thing1.velx) < (thing2.x + thing2.w))){
+    return true;
+  } else {
+    return false;
+  }
 }
 
 Game.prototype.runPowerUpCollisions = function(k) {
@@ -421,40 +406,21 @@ Game.prototype.runPowerUpCollisions = function(k) {
   this.currentLevel.powerUp.splice(k,1);
 };
 
-Game.prototype.projectileCollision = function(l,m){
-  var leftProjectile = this.currentLevel.projectiles[l].x;
-  var rightProjectile = this.currentLevel.projectiles[l].x + this.currentLevel.projectiles[l].w;
-  var topProjectile = this.currentLevel.projectiles[l].y;
-  var bottomProjectile = this.currentLevel.projectiles[l].y + this.currentLevel.projectiles[l].h;
-  var leftBrick = this.currentLevel.bricks[m].x;
-  var rightBrick = this.currentLevel.bricks[m].x + this.currentLevel.bricks[m].w;
-  var topBrick = this.currentLevel.bricks[m].y;
-  var bottomBrick = this.currentLevel.bricks[m].y + this.currentLevel.bricks[m].h;
-
-  if(bottomProjectile < topBrick) return(false);
-  if(topProjectile > bottomBrick) return(false);
-
-  if(rightProjectile < leftBrick) return(false);
-  if(leftProjectile > rightBrick) return(false);
-
-  return (true);
-};
-
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
-    if(this.currentLevel.balls[i].nextx<0){
+    if(this.currentLevel.balls[i].x<0){
       this.sounds.lightHit.play();
       this.currentLevel.balls[i].velx *= -1;
     }
-    if(this.currentLevel.balls[i].nextx+this.currentLevel.balls[i].w>canvas.width){
+    if(this.currentLevel.balls[i].x+this.currentLevel.balls[i].w>canvas.width){
       this.sounds.lightHit.play();
       this.currentLevel.balls[i].velx *= -1;
     }
-    if(this.currentLevel.balls[i].nexty<0){
+    if(this.currentLevel.balls[i].y<0){
       this.sounds.lightHit.play();
       this.currentLevel.balls[i].vely *= -1;
     }
-    if(this.currentLevel.balls[i].nexty+this.currentLevel.balls[i].h>canvas.height){
+    if(this.currentLevel.balls[i].y+this.currentLevel.balls[i].h>canvas.height){
       // this.currentLevel.balls[i].vely *= -1;
       this.isTheMouseBeingPressed = false;
       this.currentLevel.balls.splice(i,1);
@@ -478,25 +444,44 @@ Game.prototype.testWalls = function(){
   }
 };
 
+Game.prototype.ballFlash = function(i){
+  //do animation here
+  console.log('it works');
+  if(this.currentLevel.balls[i].flashTimer > 6 || this.currentLevel.balls[i].flashTimer < 4) {
+    this.c.fillStyle = "white";
+    this.c.beginPath();
+    this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
+    this.c.closePath();
+    this.c.fill();
+  }
+  this.currentLevel.balls[i].flashTimer--;
+}
+
 Game.prototype.drawRenderBalls = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     if(!this.currentLevel.balls[i].launched) {
       this.currentLevel.balls[i].x = (this.currentLevel.bricks[0].x+((this.currentLevel.bricks[0].w/2)-(this.currentLevel.balls[i].w)/2));
-      this.currentLevel.balls[i].nextx = this.currentLevel.balls[i].x;
-      this.currentLevel.balls[i].nexty = this.currentLevel.balls[i].y;
+      //TODO: REMOVE THIS WHEN DONE DELETING NEXTX/Y
+      // this.currentLevel.balls[i].nextx = this.currentLevel.balls[i].x;
+      // this.currentLevel.balls[i].nexty = this.currentLevel.balls[i].y;
       this.c.fillStyle = "blue";
       this.c.beginPath();
       this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
       this.c.closePath();
       this.c.fill();
     } else {
-    this.currentLevel.balls[i].x = this.currentLevel.balls[i].nextx;
-    this.currentLevel.balls[i].y = this.currentLevel.balls[i].nexty;
+    //TODO: REMOVE THIS WHEN DONE DELETING NEXTX/Y
+    this.currentLevel.balls[i].x += this.currentLevel.balls[i].velx;
+    this.currentLevel.balls[i].y += this.currentLevel.balls[i].vely;
     this.c.fillStyle = "blue";
     this.c.beginPath();
     this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
     this.c.closePath();
     this.c.fill();
+    console.log(this.currentLevel.balls[i].flashTimer);
+    if(this.currentLevel.balls[i].flashTimer > 0){
+      this.ballFlash(i);
+    }
     }
   }
 };
@@ -516,9 +501,16 @@ Game.prototype.updatePosition = function(){
       } else if(this.currentLevel.balls[i].vely < -15){
         this.currentLevel.balls[i].vely = -15;
       }
-      this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
-      this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
+
     }
+  }
+  if(this.currentLevel.powerUp.length > 0){
+    this.updatePowerUp();
+    this.drawPowerUp();
+  }
+  if(this.currentLevel.projectiles.length > 0){
+    this.updateProjectile();
+    this.drawProjectiles();
   }
 };
 
