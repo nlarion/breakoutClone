@@ -277,6 +277,7 @@ Game.prototype.collide = function(){
           (this.currentLevel.balls[i].x < this.currentLevel.bricks[j].x)) ) {
           this.currentLevel.balls[i].velx *= -(1 + .05);
           this.currentLevel.balls[i].vely += .05;//+0.5 increases the ball speed every time it hits something.
+          //try and make the ball do something here.
         } else {
           if(j===0) {
             this.currentLevel.balls[i].velx += this.currentLevel.bricks[j].velx*0.3;
@@ -316,6 +317,7 @@ Game.prototype.collide = function(){
 
 Game.prototype.doCollide = function(i,j){
   var decreaseLifeFlag = false;
+  this.currentLevel.balls[i].flashTimer = 9;
   if(this.currentLevel.bricks[j].type==="Player"){
     this.sounds.normalHit.play();
   }else if(this.currentLevel.bricks[j].type==="Inert"){
@@ -484,6 +486,19 @@ Game.prototype.testWalls = function(){
   }
 };
 
+Game.prototype.ballFlash = function(i){
+  //do animation here
+  console.log('it works');
+  if(this.currentLevel.balls[i].flashTimer > 6 || this.currentLevel.balls[i].flashTimer < 4) {
+    this.c.fillStyle = "white";
+    this.c.beginPath();
+    this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
+    this.c.closePath();
+    this.c.fill();
+  }
+  this.currentLevel.balls[i].flashTimer--;
+}
+
 Game.prototype.drawRenderBalls = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     if(!this.currentLevel.balls[i].launched) {
@@ -503,6 +518,10 @@ Game.prototype.drawRenderBalls = function(){
     this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
     this.c.closePath();
     this.c.fill();
+    console.log(this.currentLevel.balls[i].flashTimer);
+    if(this.currentLevel.balls[i].flashTimer > 0){
+      this.ballFlash(i);
+    }
     }
   }
 };
