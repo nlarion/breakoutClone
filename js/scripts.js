@@ -158,7 +158,7 @@ Game.prototype.gameLoop = function(){
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
-  this.c.fillStyle = "gray";
+  this.c.fillStyle = "black";
   this.c.fillRect(0,0,canvas.width,canvas.height);
   this.c.font = "12px serif";
   this.c.fillStyle = "#000000";
@@ -230,11 +230,11 @@ Game.prototype.drawBricks = function(){
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
     }
     this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx;
-    this.c.fillStyle = this.currentLevel.bricks[i].color;
-    this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    this.c.strokeStyle = this.currentLevel.bricks[i].color;
+    this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     if(this.currentLevel.bricks[i].type==="Durable" && this.currentLevel.bricks[i].life>1){
-      this.c.fillStyle = "rgba(0,0,0,.5)";
-      this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+      this.c.strokeStyle = "rgba(0,0,0,.5)";
+      this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     }
 
     this.currentLevel.bricks[i].timer<50 ? this.currentLevel.bricks[i].timer++: false;
