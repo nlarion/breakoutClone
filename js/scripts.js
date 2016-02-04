@@ -18,6 +18,7 @@ var Game = function(){
   this.level = 1;
   this.currentLevel = new Level(1);
   this.currentPlayer = new Player();
+  this.getKeyPress;
 
 }
 
@@ -35,7 +36,6 @@ Game.prototype.gameManager = function(){
     this.audio.addUri('sounds/breakoutLoop4.mp3',2700,"loop4");
     this.audio.addUri('sounds/breakoutLoop5.mp3',7990,"loop5");
     this.sounds = {gameOver: new Audio('sounds/breakoutGameOver.mp3'), normalHit: new Audio('sounds/SG280_BD_11.mp3'), lightHit: new Audio('sounds/SG280_Bongo_08.mp3'), powerUp: new Audio('sounds/SG280_Cym_01.mp3'), steady: new Audio('sounds/SG280_Tom_02.mp3'), mediumHit: new Audio('sounds/SG280_SD_02.mp3')};
-
     // this.audio = new Audio('sounds/breakoutLoop1.mp3');
     this.pointImage.src = "images/point.png"; // load all assets now so
     var t = this;
@@ -45,6 +45,9 @@ Game.prototype.gameManager = function(){
     });
     this.$canvas.click(function() {
       t.isTheMouseBeingPressed = true;
+    });
+    $(window).keypress(function(e){
+      t.getKeyPress = e;
     });
     this.appState = STATE_INIT;
     break;
@@ -109,13 +112,7 @@ Game.prototype.gameOverScreen = function(){
   this.c.font = " "+ canvas.width / 30 + "px serif";
   this.c.fillText("Click to Try Again...",canvas.width / 2.8, canvas.height / 1.5);
   if (this.isTheMouseBeingPressed == true) {
-    this.firstRun = true;
-    this.isTheMouseBeingPressed = false;
-    levelConstructs = new LevelConstruct();
-    this.level = 1;
-    this.currentLevel = new Level(1);
-    this.currentPlayer = new Player();
-    this.appState = STATE_INIT;
+    this.changeStateAndRestartGame();
   }
 }
 
@@ -134,12 +131,34 @@ Game.prototype.winnerScreen = function() {
   this.c.fillText ("You Won!",canvas.width / 4, canvas.height / 2);
   this.c.font = " "+ canvas.width / 30 + "px serif";
   this.c.fillText("Game by: Neil Larion, Matt Rosanio, Will Johnson, and Michael Smith", canvas.width / 40, canvas.height / 1.5);
+  if (this.isTheMouseBeingPressed == true) {
+    this.changeStateAndRestartGame();
+  }
 };
+
+Game.prototype.changeStateAndRestartGame = function(){
+  this.firstRun = true;
+  this.isTheMouseBeingPressed = false;
+  levelConstructs = new LevelConstruct();
+  this.level = 1;
+  this.currentLevel = new Level(1);
+  this.currentPlayer = new Player();
+  this.audio.stop();
+  this.appState = STATE_INIT;
+}
 
 Game.prototype.gameLoop = function(){
   if (this.firstRun) {
     this.audio.start("loop1");
     this.firstRun = false;
+  }
+  if(this.getKeyPress){
+    if(this.getKeyPress.which === 108){
+      this.currentPlayer.lives++;
+    }else if(this.getKeyPress.which === 110){
+      this.handleLevelAdvance();
+    }
+    this.getKeyPress = undefined;
   }
   this.clearCanvasAndDisplayDetails();
   this.updatePosition();
@@ -158,7 +177,7 @@ Game.prototype.gameLoop = function(){
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
-  this.c.fillStyle = "gray";
+  this.c.fillStyle = "black";
   this.c.fillRect(0,0,canvas.width,canvas.height);
   this.c.font = "12px serif";
   this.c.fillStyle = "#000000";
@@ -168,7 +187,11 @@ Game.prototype.clearCanvasAndDisplayDetails = function(){
   this.c.fillText ("VelX: "+this.currentLevel.balls[0].velx+" VelY: "+ this.currentLevel.balls[0].vely, canvas.width-100,canvas.height -20);
   for (var i = 0; i < this.currentPlayer.lives-1; i++) {
     this.c.fillStyle = "blue";
-    this.c.fillRect((i*20)+60,canvas.height -30,10,10);
+    this.c.beginPath();
+    this.c.arc((i*20)+60,canvas.height-25,this.currentLevel.balls[0].w/2,0,Math.PI*2,true);
+    this.c.closePath();
+    this.c.fill();
+    // this.c.fillRect((i*20)+60,canvas.height -30,10,10);
   }
   this
 }
@@ -229,12 +252,12 @@ Game.prototype.drawBricks = function(){
     }else {
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
     }
-    this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx; //TODO:fix player brick from clipping walls
-    this.c.fillStyle = this.currentLevel.bricks[i].color;
-    this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+    this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx;
+    this.c.strokeStyle = this.currentLevel.bricks[i].color;
+    this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     if(this.currentLevel.bricks[i].type==="Durable" && this.currentLevel.bricks[i].life>1){
-      this.c.fillStyle = "rgba(0,0,0,.5)";
-      this.c.fillRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
+      this.c.strokeStyle = "rgba(0,0,0,.5)";
+      this.c.strokeRect(this.currentLevel.bricks[i].x,this.currentLevel.bricks[i].y,this.currentLevel.bricks[i].w,this.currentLevel.bricks[i].h);
     }
 
     this.currentLevel.bricks[i].timer<50 ? this.currentLevel.bricks[i].timer++: false;
@@ -282,20 +305,7 @@ Game.prototype.collide = function(){
         if(this.currentLevel.bricks[m].life <= 0) {
           this.currentLevel.bricks.splice(m,1);
           if(this.currentLevel.bricks.length === this.currentLevel.winCriteria && this.currentPlayer.lives>0){
-            this.level++;
-            console.log(levelConstructs.length);
-            if(levelConstructs.length===1){
-              this.firstRun = true;
-              this.audio.stop();
-              this.appState = STATE_WIN;
-            }else{
-              this.isTheMouseBeingPressed = false;
-              this.firstRun = true;
-              this.audio.stop();
-              this.appState = STATE_LOADING_LEVEL;
-              //console.log(this.currentLevel);
-              //console.log(levelConstructs);
-            }
+            this.handleLevelAdvance();
           }
         }
         this.currentLevel.projectiles.splice(l,1);
@@ -345,21 +355,22 @@ Game.prototype.doCollide = function(i,j){
       this.currentLevel.bricks.splice(j,1);
     }
     if(this.currentLevel.bricks.length === this.currentLevel.winCriteria && this.currentPlayer.lives>0){
-      this.level++;
-      console.log(levelConstructs.length);
-      if(levelConstructs.length===1){
-        this.firstRun = true;
-        this.audio.stop();
-        this.appState = STATE_WIN;
-      }else{
-        this.isTheMouseBeingPressed = false;
-        this.firstRun = true;
-        this.audio.stop();
-        this.appState = STATE_LOADING_LEVEL;
-        //console.log(this.currentLevel);
-        //console.log(levelConstructs);
-      }
+      this.handleLevelAdvance();
     }
+  }
+}
+
+Game.prototype.handleLevelAdvance = function(){
+  this.level++;
+  if(levelConstructs.length===1){
+    this.firstRun = true;
+    this.audio.stop();
+    this.appState = STATE_WIN;
+  }else{
+    this.isTheMouseBeingPressed = false;
+    this.firstRun = true;
+    this.audio.stop();
+    this.appState = STATE_LOADING_LEVEL;
   }
 }
 
