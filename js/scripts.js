@@ -166,21 +166,13 @@ Game.prototype.gameLoop = function(){
   this.testWalls();
   this.drawBricks();
   this.drawRenderBalls();
-  if(this.currentLevel.powerUp.length > 0){//something like this...
-    this.updatePowerUp();
-    this.drawPowerUp();
-  }
-  if(this.currentLevel.projectiles.length > 0){
-    this.updateProjectile();
-    this.drawProjectiles();
-  }
 };
 
 Game.prototype.clearCanvasAndDisplayDetails = function(){
   this.c.fillStyle = "black";
   this.c.fillRect(0,0,canvas.width,canvas.height);
   this.c.font = "12px serif";
-  this.c.fillStyle = "#000000";
+  this.c.fillStyle = "white";
   this.c.fillText ("FPS: "+fps.getFPS(), 20, 20);
   this.c.fillText ("Score: " + this.currentPlayer.score, canvas.width-65, 20);
   this.c.fillText ("Lives: ", 20, canvas.height - 20);
@@ -268,7 +260,7 @@ Game.prototype.drawBricks = function(){
 Game.prototype.collide = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     for (var j = 0; j < this.currentLevel.bricks.length; j++) {
-      if ( ((this.currentLevel.balls[i].nexty + this.currentLevel.balls[i].h) > (this.currentLevel.bricks[j].y)) && ((this.currentLevel.balls[i].nexty) < (this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h)) && ((this.currentLevel.balls[i].nextx + this.currentLevel.balls[i].w) > this.currentLevel.bricks[j].x) && (this.currentLevel.balls[i].nextx < (this.currentLevel.bricks[j].x + this.currentLevel.bricks[j].w)) ) {
+      if ( this.checkCollision(this.currentLevel.balls[i],this.currentLevel.bricks[j]) ) {
         //left and right of ball
         if ( (this.currentLevel.balls[i].y + this.currentLevel.balls[i].h > this.currentLevel.bricks[j].y) &&
           (this.currentLevel.balls[i].y < this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h) &&
@@ -279,9 +271,8 @@ Game.prototype.collide = function(){
           this.currentLevel.balls[i].vely += .05;//+0.5 increases the ball speed every time it hits something.
           //try and make the ball do something here.
         } else {
-          if(j===0) {
+          if(j===0) { // player brick
             this.currentLevel.balls[i].velx += this.currentLevel.bricks[j].velx*0.3;
-
           }
           this.currentLevel.balls[i].vely *= -(1 + .05);
           this.currentLevel.balls[i].velx += .05;//+0.5 increases the ball speed every time it hits something.
@@ -291,10 +282,8 @@ Game.prototype.collide = function(){
     }
   }
   for(var k = 0; k < this.currentLevel.powerUp.length; k++){
-    var powerUpCollision = this.powerUpCollisions(k);
-    if(powerUpCollision) {
+    if(this.checkCollision(this.currentLevel.bricks[0],this.currentLevel.powerUp[k])){
       this.runPowerUpCollisions(k);
-      //run another function
     }
   }
   for(var l = 0; l < this.currentLevel.projectiles.length; l++) {
@@ -391,6 +380,32 @@ Game.prototype.powerUpCollisions = function(k) {
   if(leftPlayer > rightPowerUp) return(false);
 
   return (true);
+}
+Game.prototype.checkCollision = function(thing1,thing2) {
+
+  if(((thing1.y + thing1.h) > (thing2.y)) && ((thing1.y) < (thing2.y + thing2.h)) && ((thing1.x + thing1.w) > thing2.x) && (thing1.x < (thing2.x + thing2.w))){
+    return true;
+  } else {
+    return false;
+  }
+
+  // this.currentLevel.balls[i].nexty + this.currentLevel.balls[i].h) > (this.currentLevel.bricks[j].y)) && ((this.currentLevel.balls[i].nexty) < (this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h)) && ((this.currentLevel.balls[i].nextx + this.currentLevel.balls[i].w) > this.currentLevel.bricks[j].x) && (this.currentLevel.balls[i].nextx < (this.currentLevel.bricks[j].x + this.currentLevel.bricks[j].w))
+  // var leftPlayer = thing1.x;
+  // var rightPlayer = thing1.x + thing1.w;
+  // var topPlayer = thing1.y;
+  // var bottomPlayer = thing1.y + thing1.h;
+  // var leftPowerUp = thing2.x;
+  // var rightPowerUp = thing2.x + thing2.w;
+  // var topPowerUp = thing2.y;
+  // var bottomPowerUp = thing2.y + thing2.h;
+  //
+  // if(bottomPlayer < topPowerUp) return(false);
+  // if(topPlayer > bottomPowerUp) return(false);
+  //
+  // if(rightPlayer < leftPowerUp) return(false);
+  // if(leftPlayer > rightPowerUp) return(false);
+  // console.log("test");
+  // return (true);
 }
 
 Game.prototype.runPowerUpCollisions = function(k) {
@@ -503,16 +518,18 @@ Game.prototype.drawRenderBalls = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     if(!this.currentLevel.balls[i].launched) {
       this.currentLevel.balls[i].x = (this.currentLevel.bricks[0].x+((this.currentLevel.bricks[0].w/2)-(this.currentLevel.balls[i].w)/2));
-      this.currentLevel.balls[i].nextx = this.currentLevel.balls[i].x;
-      this.currentLevel.balls[i].nexty = this.currentLevel.balls[i].y;
+      //TODO: REMOVE THIS WHEN DONE DELETING NEXTX/Y
+      // this.currentLevel.balls[i].nextx = this.currentLevel.balls[i].x;
+      // this.currentLevel.balls[i].nexty = this.currentLevel.balls[i].y;
       this.c.fillStyle = "blue";
       this.c.beginPath();
       this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
       this.c.closePath();
       this.c.fill();
     } else {
-    this.currentLevel.balls[i].x = this.currentLevel.balls[i].nextx;
-    this.currentLevel.balls[i].y = this.currentLevel.balls[i].nexty;
+    //TODO: REMOVE THIS WHEN DONE DELETING NEXTX/Y
+    // this.currentLevel.balls[i].x = this.currentLevel.balls[i].nextx;
+    // this.currentLevel.balls[i].y = this.currentLevel.balls[i].nexty;
     this.c.fillStyle = "blue";
     this.c.beginPath();
     this.c.arc(this.currentLevel.balls[i].x+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].y+(this.currentLevel.balls[i].w/2),this.currentLevel.balls[i].w/2,0,Math.PI*2,true);
@@ -544,6 +561,14 @@ Game.prototype.updatePosition = function(){
       this.currentLevel.balls[i].nextx += this.currentLevel.balls[i].velx;
       this.currentLevel.balls[i].nexty += this.currentLevel.balls[i].vely;
     }
+  }
+  if(this.currentLevel.powerUp.length > 0){
+    this.updatePowerUp();
+    this.drawPowerUp();
+  }
+  if(this.currentLevel.projectiles.length > 0){
+    this.updateProjectile();
+    this.drawProjectiles();
   }
 };
 
