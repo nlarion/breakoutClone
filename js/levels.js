@@ -22,7 +22,7 @@ var LevelConstruct = function(){
     ['Inert',350,0,100,98,23,'white',10, ""],
     ['Inert',450,0,100,98,23,'blue',50, "newBall"],
     ['Inert',550,0,100,98,23,'white',10, ""],
-    ['Inert',650,0,100,98,23,'white',10, ""], ],
+    ['Inert',650,0,100,98,23,'white',10, "machineGun"], ],
 
    [['Player',200,550,250,65,15,'red',0],
    ['Durable',50,0,100,100,25,'orange',30, ""],
