@@ -259,8 +259,7 @@ Game.prototype.drawBricks = function(){
 Game.prototype.collide = function(){
   for (var i = 0; i < this.currentLevel.balls.length; i++) {
     for (var j = 0; j < this.currentLevel.bricks.length; j++) {
-      if ( this.checkCollision(this.currentLevel.balls[i],this.currentLevel.bricks[j]) ) {
-        //left and right of ball
+      if ( this.checkCollision(this.currentLevel.balls[i],this.currentLevel.bricks[j]) ) { //left and right of ball
         if ( (this.currentLevel.balls[i].y + this.currentLevel.balls[i].h > this.currentLevel.bricks[j].y) &&
           (this.currentLevel.balls[i].y < this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h) &&
           ((this.currentLevel.balls[i].x + this.currentLevel.balls[i].w > this.currentLevel.bricks[j].x) &&
@@ -282,14 +281,13 @@ Game.prototype.collide = function(){
     }
   }
   for(var k = 0; k < this.currentLevel.powerUp.length; k++){
-    if(this.checkCollision(this.currentLevel.bricks[0],this.currentLevel.powerUp[k])){
+    if(this.checkCollision(this.currentLevel.powerUp[k],this.currentLevel.bricks[0])){
       this.runPowerUpCollisions(k);
     }
   }
   for(var l = 0; l < this.currentLevel.projectiles.length; l++) {
     for(var m = 0; m < this.currentLevel.bricks.length; m++) {
-      var projectileCollision = this.projectileCollision(l,m);
-      if(projectileCollision) {
+      if(this.checkCollision(this.currentLevel.projectiles[l],this.currentLevel.bricks[m])) {
         this.currentLevel.bricks[m].life -= 0.2;
         if(this.currentLevel.bricks[m].life <= 0) {
           this.currentLevel.bricks.splice(m,1);
@@ -363,49 +361,13 @@ Game.prototype.handleLevelAdvance = function(){
   }
 }
 
-Game.prototype.powerUpCollisions = function(k) {
-  var leftPlayer = this.currentLevel.bricks[0].x;
-  var rightPlayer = this.currentLevel.bricks[0].x + this.currentLevel.bricks[0].w;
-  var topPlayer = this.currentLevel.bricks[0].y;
-  var bottomPlayer = this.currentLevel.bricks[0].y + this.currentLevel.bricks[0].h;
-  var leftPowerUp = this.currentLevel.powerUp[k].x;
-  var rightPowerUp = this.currentLevel.powerUp[k].x + this.currentLevel.powerUp[k].w;
-  var topPowerUp = this.currentLevel.powerUp[k].y;
-  var bottomPowerUp = this.currentLevel.powerUp[k].y + this.currentLevel.powerUp[k].h;
-
-  if(bottomPlayer < topPowerUp) return(false);
-  if(topPlayer > bottomPowerUp) return(false);
-
-  if(rightPlayer < leftPowerUp) return(false);
-  if(leftPlayer > rightPowerUp) return(false);
-
-  return (true);
-}
 Game.prototype.checkCollision = function(thing1,thing2) {
 
-  if(((thing1.y + thing1.h) > (thing2.y)) && ((thing1.y) < (thing2.y + thing2.h)) && ((thing1.x + thing1.w) > thing2.x) && (thing1.x < (thing2.x + thing2.w))){
+  if((((thing1.y+thing1.vely) + thing1.h) > (thing2.y)) && ((thing1.y+thing1.vely) < (thing2.y + thing2.h)) && (((thing1.x+thing1.velx) + thing1.w) > thing2.x) && ((thing1.x+thing1.velx) < (thing2.x + thing2.w))){
     return true;
   } else {
     return false;
   }
-
-  // this.currentLevel.balls[i].nexty + this.currentLevel.balls[i].h) > (this.currentLevel.bricks[j].y)) && ((this.currentLevel.balls[i].nexty) < (this.currentLevel.bricks[j].y + this.currentLevel.bricks[j].h)) && ((this.currentLevel.balls[i].nextx + this.currentLevel.balls[i].w) > this.currentLevel.bricks[j].x) && (this.currentLevel.balls[i].nextx < (this.currentLevel.bricks[j].x + this.currentLevel.bricks[j].w))
-  // var leftPlayer = thing1.x;
-  // var rightPlayer = thing1.x + thing1.w;
-  // var topPlayer = thing1.y;
-  // var bottomPlayer = thing1.y + thing1.h;
-  // var leftPowerUp = thing2.x;
-  // var rightPowerUp = thing2.x + thing2.w;
-  // var topPowerUp = thing2.y;
-  // var bottomPowerUp = thing2.y + thing2.h;
-  //
-  // if(bottomPlayer < topPowerUp) return(false);
-  // if(topPlayer > bottomPowerUp) return(false);
-  //
-  // if(rightPlayer < leftPowerUp) return(false);
-  // if(leftPlayer > rightPowerUp) return(false);
-  // console.log("test");
-  // return (true);
 }
 
 Game.prototype.runPowerUpCollisions = function(k) {
@@ -442,25 +404,6 @@ Game.prototype.runPowerUpCollisions = function(k) {
     this.currentLevel.bricks[0].machineGunTime = 500;
   }
   this.currentLevel.powerUp.splice(k,1);
-};
-
-Game.prototype.projectileCollision = function(l,m){
-  var leftProjectile = this.currentLevel.projectiles[l].x;
-  var rightProjectile = this.currentLevel.projectiles[l].x + this.currentLevel.projectiles[l].w;
-  var topProjectile = this.currentLevel.projectiles[l].y;
-  var bottomProjectile = this.currentLevel.projectiles[l].y + this.currentLevel.projectiles[l].h;
-  var leftBrick = this.currentLevel.bricks[m].x;
-  var rightBrick = this.currentLevel.bricks[m].x + this.currentLevel.bricks[m].w;
-  var topBrick = this.currentLevel.bricks[m].y;
-  var bottomBrick = this.currentLevel.bricks[m].y + this.currentLevel.bricks[m].h;
-
-  if(bottomProjectile < topBrick) return(false);
-  if(topProjectile > bottomBrick) return(false);
-
-  if(rightProjectile < leftBrick) return(false);
-  if(leftProjectile > rightBrick) return(false);
-
-  return (true);
 };
 
 Game.prototype.testWalls = function(){
