@@ -71,7 +71,10 @@ Game.prototype.gameManager = function(){
 };
 
 Game.prototype.loadingLevelScreen = function(){
-
+  if (this.firstRun) {
+    this.audio.start("loop2");
+    this.firstRun = false;
+  }
   this.c.fillStyle = '#000111';
   this.c.fillRect(0, 0, canvas.width, canvas.height);
   //Box
@@ -82,6 +85,8 @@ Game.prototype.loadingLevelScreen = function(){
   this.c.font = " "+ canvas.width / 30 + "px serif";
   this.c.fillText("Click to Advance to Next Level",canvas.width / 3.6, canvas.height / 1.5);
   if (this.isTheMouseBeingPressed == true) {
+    this.firstRun = true;
+    this.audio.stop();
     this.isTheMouseBeingPressed = false;
     levelConstructs.splice(0,1);
     this.currentLevel = new Level(1);
@@ -94,7 +99,6 @@ Game.prototype.gameOverScreen = function(){
     this.sounds.gameOver.play();
     this.firstRun = false;
   }
-
   this.c.fillStyle = '#000111';
   this.c.fillRect(0, 0, canvas.width, canvas.height);
   //Box
@@ -252,23 +256,34 @@ Game.prototype.collide = function(){
 };
 
 Game.prototype.doCollide = function(i,j){
-  console.log(this.currentLevel.bricks[j]);
-  if(this.currentLevel.bricks[j].type==="Durable" || this.currentLevel.bricks[j].type==="Inert" || this.currentLevel.bricks[j].type==="Speedy") {
+  var decreaseLifeFlag = false;
+  if(this.currentLevel.bricks[j].type==="Player"){
+    this.sounds.normalHit.play();
+  }else if(this.currentLevel.bricks[j].type==="Inert"){
+    decreaseLifeFlag = true;
+    this.sounds.normalHit.play();
+  }else if(this.currentLevel.bricks[j].type==="Durable"){
+    decreaseLifeFlag = true;
+    this.sounds.normalHit.play();
+  }else if(this.currentLevel.bricks[j].type==="Speedy"){
+    decreaseLifeFlag = true;
+    this.sounds.powerUp.play();
+    if(this.currentLevel.balls[i].velx<0) {
+      this.currentLevel.balls[i].velx -= 3;
+    } else {
+      this.currentLevel.balls[i].velx += 3;
+    }
+    if(this.currentLevel.balls[i].vely<0) {
+      this.currentLevel.balls[i].vely -= 3;
+    } else {
+      this.currentLevel.balls[i].vely += 3;
+    }
+  }else if (this.currentLevel.bricks[j].type==="Steady"){
+    this.sounds.steady.play();
+  }
+  if(decreaseLifeFlag) {
     this.currentPlayer.score += this.currentLevel.bricks[j].score;
     this.currentLevel.bricks[j].life -= 1;
-    if(this.currentLevel.bricks[j].type === "Speedy") {
-
-      if(this.currentLevel.balls[i].velx<0) {
-        this.currentLevel.balls[i].velx -= 3;
-      } else {
-        this.currentLevel.balls[i].velx += 3;
-      }
-      if(this.currentLevel.balls[i].vely<0) {
-        this.currentLevel.balls[i].vely -= 3;
-      } else {
-        this.currentLevel.balls[i].vely += 3;
-      }
-    }
     if(this.currentLevel.bricks[j].powerUp.length>0) {
       //powerup array being created
       var newPowerUp = new PowerUP(this.currentLevel.bricks[j].x,this.currentLevel.bricks[j].y,25,5,this.currentLevel.bricks[j].powerUp);
@@ -325,12 +340,15 @@ Game.prototype.runPowerUpCollisions = function(k) {
 Game.prototype.testWalls = function(){
   for (var i = 0, max = this.currentLevel.balls.length; i < max; i = i + 1) {
     if(this.currentLevel.balls[i].nextx<0){
+      this.sounds.lightHit.play();
       this.currentLevel.balls[i].velx *= -1;
     }
     if(this.currentLevel.balls[i].nextx+this.currentLevel.balls[i].w>canvas.width){
+      this.sounds.lightHit.play();
       this.currentLevel.balls[i].velx *= -1;
     }
     if(this.currentLevel.balls[i].nexty<0){
+      this.sounds.lightHit.play();
       this.currentLevel.balls[i].vely *= -1;
     }
     if(this.currentLevel.balls[i].nexty+this.currentLevel.balls[i].h>canvas.height){
