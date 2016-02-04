@@ -145,7 +145,6 @@ Game.prototype.gameLoop = function(){
     this.firstRun = false;
   }
   if(this.getKeyPress){
-    console.log(this.getKeyPress.which);
     if(this.getKeyPress.which === 108){
       this.currentPlayer.lives++;
     }else if(this.getKeyPress.which === 110){
@@ -153,7 +152,6 @@ Game.prototype.gameLoop = function(){
     }
     this.getKeyPress = undefined;
   }
-
   this.clearCanvasAndDisplayDetails();
   this.updatePosition();
   this.collide();
