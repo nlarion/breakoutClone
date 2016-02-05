@@ -2,30 +2,32 @@
 var LevelConstruct = function(){
   return [
     [ ['Player',200,550,250,65,15,'red',0],
-    // ['Inert',50,0,50,98,23,'#ff00ff',100, "extraLife"],
-    // ['Inert',150,0,50,98,23,'white',10, ""],
-    // ['Inert',250,0,50,98,23,'white',10, ""],
-    // ['Inert',350,0,50,98,23,'white',10, ""],
-    // ['Inert',450,0,50,98,23,'white',10, ""],
-    // ['Inert',550,0,50,98,23,'white',10, ""],
-    // ['Inert',650,0,50,98,23,'#ff00ff',100, "extraLife"],
-    // ['Inert',50,0,75,98,23,'white',10, ""],
-    // ['Inert',150,0,75,98,23,'white',10, ""],
-    // ['Inert',250,0,75,98,23,'white',10, ""],
-    // ['Inert',350,0,75,98,23,'white',10, ""],
-    // ['Inert',450,0,75,98,23,'white',10, ""],
-    // ['Inert',550,0,75,98,23,'white',10, ""],
-    // ['Inert',650,0,75,98,23,'white',10, ""],
-    // ['Inert',50,0,100,98,23,'white',10, ""],
-    // ['Inert',150,0,100,98,23,'white',10, ""],
-    // ['Inert',250,0,100,98,23,'red',50, "paddleWidth"],
-    // ['Inert',350,0,100,98,23,'white',10, ""],
-    // ['Inert',450,0,100,98,23,'blue',50, "newBall"],
-    // ['Inert',550,0,100,98,23,'white',10, ""],
+    ['Inert',50,0,50,98,23,'#ff00ff',100, "extraLife"],
+    ['Inert',150,0,50,98,23,'white',10, ""],
+    ['Inert',250,0,50,98,23,'white',10, ""],
+    ['Inert',350,0,50,98,23,'white',10, ""],
+    ['Inert',450,0,50,98,23,'white',10, ""],
+    ['Inert',550,0,50,98,23,'white',10, ""],
+    ['Inert',650,0,50,98,23,'#ff00ff',100, "extraLife"],
+    ['Inert',50,0,75,98,23,'white',10, ""],
+    ['Inert',150,0,75,98,23,'white',10, ""],
+    ['Inert',250,0,75,98,23,'white',10, ""],
+    ['Inert',350,0,75,98,23,'white',10, ""],
+    ['Inert',450,0,75,98,23,'white',10, ""],
+    ['Inert',550,0,75,98,23,'white',10, ""],
+    ['Inert',650,0,75,98,23,'white',10, ""],
+    ['Inert',50,0,100,98,23,'white',10, ""],
+    ['Inert',150,0,100,98,23,'white',10, ""],
+    ['Inert',250,0,100,98,23,'red',50, "paddleWidth"],
+    ['Inert',350,0,100,98,23,'white',10, ""],
+    ['Inert',450,0,100,98,23,'blue',50, "newBall"],
+    ['Inert',550,0,100,98,23,'white',10, ""],
     ['Inert',650,0,100,98,23,'white',10, ""],
-    ['Steady',800,0,0,5,600,'yellow',0, ""],
-    ['Steady',-10,0,0,10,600,'yellow',0, ""],
-    ['Steady',0,0,-10,800,10,'yellow',0, ""],],
+    // ['Steady',0,0,590,820,10,'yellow',0, ""],
+    // ['Steady',0,0,500,820,10,'yellow',0, ""],
+    ['Steady',800,0,-10,10,610,'yellow',0, ""],
+    ['Steady',-10,0,-10,10,610,'yellow',0, ""],
+    ['Steady',-10,0,-10,820,10,'yellow',0, ""],],
 
    [['Player',200,550,250,65,15,'red',0],
    ['Durable',50,0,100,100,25,'orange',30, ""],
@@ -269,7 +271,6 @@ var Level = function(currentLevel) {
   this.getCurrentLevelprops();
   this.makeBall(394,538);
   this.brickAndBallStart = false;
-
 }
 
 Level.prototype.makeBall = function(x,y){
@@ -289,9 +290,7 @@ Level.prototype.getCurrentLevelprops = function() {
     var pushcolor = levelConstructs[this.currentLevel-1][i][6];
     var pushScore = levelConstructs[this.currentLevel-1][i][7];
     var pushPowerUp = levelConstructs[this.currentLevel-1][i][8];
-
     var newBrick = new Brick(pushtype,pushx,pushy,pushFinalY,width,height,pushcolor,pushScore,pushPowerUp);
-    //console.log(newBrick);
     if(pushtype === 'Player') {
       newBrick.player = true;
       newBrick.life = 1;
