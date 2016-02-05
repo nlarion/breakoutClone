@@ -268,6 +268,7 @@ var Level = function(currentLevel) {
   this.winCriteria = 0;
   this.getCurrentLevelprops();
   this.makeBall(394,538);
+  this.brickAndBallStart = false;
 
 }
 
