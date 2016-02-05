@@ -168,6 +168,8 @@ Game.prototype.gameLoop = function(){
     this.updatePosition();
     this.testWalls();
   }
+  console.log("test");
+  this.screenShake(((this.shakeXMod)*-1),((this.shakeYMod)*-1),this.shakeTimer);
   this.drawBricks();
   this.drawRenderBalls();
 
@@ -224,9 +226,7 @@ Game.prototype.initApp = function(){
 }
 
 Game.prototype.drawBricks = function(){
-  this.screenShake(((this.shakeXMod)*-1),((this.shakeYMod)*-1),this.shakeTimer);
   for (var i = 0; i < this.currentLevel.bricks.length; i++) {
-    //this.currentLevel.bricks[i].player ? false : this.currentLevel.bricks[i].y +=(200-this.currentLevel.bricks[i].y)*.1; //simple easing.
     if(this.currentLevel.bricks[i].player){
       this.currentLevel.bricks[i].velx = (this.currentPlayer.x-this.currentLevel.bricks[i].x)*.4;
       if(this.currentLevel.bricks[i].paddleTime > 0) {
@@ -250,7 +250,7 @@ Game.prototype.drawBricks = function(){
     } else {
       this.currentLevel.bricks[i].y = easeOutBack(this.currentLevel.bricks[i].timer,0,this.currentLevel.bricks[i].finalY,50);
     }
-
+    //TODO: find out where player brick is being delayed... probably right below this
     this.currentLevel.bricks[i].y += this.currentLevel.bricks[i].vely+this.shakeYMod;
     this.currentLevel.bricks[i].x += this.currentLevel.bricks[i].velx+this.shakeXMod;
     if(i===0) {
@@ -302,6 +302,7 @@ Game.prototype.collide = function(){
           this.currentLevel.balls[i].velx += .05;//+0.5 increases the ball speed every time it hits something.
         }
         this.doCollide(i,j);
+        console.log("hi");
       }
       // this.currentLevel.bricks[j].velx +=this.shakeXMod;
       // this.currentLevel
@@ -330,9 +331,12 @@ Game.prototype.collide = function(){
 };
 
 Game.prototype.doCollide = function(i,j){
-  this.screenShake(50,50);
   var decreaseLifeFlag = false;
   this.currentLevel.balls[i].flashTimer = 9;
+  //TODO: fix screenshake
+  console.log("test");
+  this.shakeTimer = 20;
+  this.screenShake(50,50);
   if(this.currentLevel.bricks[j].type==="Player"){
     this.sounds.normalHit.play();
   }else if(this.currentLevel.bricks[j].type==="Inert"){
@@ -375,20 +379,15 @@ Game.prototype.doCollide = function(i,j){
   }
 }
 
-Game.prototype.screenShake = function(x,y,timer){
-  if(timer===undefined){
-    this.shakeTimer = 10;
-  }else{
-    this.shakeTimer = timer;
-  }
+Game.prototype.screenShake = function(x,y){
   if(this.shakeTimer<1){
-    this.shakeXMod = 0;
-    this.shakeYMod = 0;
+    // this.shakeXMod = 0;
+    // this.shakeYMod = 0;
   }else{
     this.shakeTimer--;
-    console.log(this.shakeXMod);
-    this.shakeXMod=(x)*.1;
-    this.shakeYMod=(y)*.1;
+    console.log(this.shakeTimer);
+  //   this.shakeXMod=(x)*.1;
+  //   this.shakeYMod=(y)*.1;
   }
 
 }
