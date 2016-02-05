@@ -305,7 +305,7 @@ Game.prototype.collide = function(){
   }
   for(var l = 0; l < this.currentLevel.projectiles.length; l++) {
     for(var m = 0; m < this.currentLevel.bricks.length; m++) {
-      if(this.checkCollision(this.currentLevel.projectiles[l],this.currentLevel.bricks[m])) {
+      if(this.checkCollision(this.currentLevel.projectiles[l],this.currentLevel.bricks[m]) && this.currentLevel.bricks[m].type !== 'Steady') {
         this.currentLevel.bricks[m].life -= 0.2;
         if(this.currentLevel.bricks[m].life <= 0) {
           this.currentLevel.bricks.splice(m,1);
